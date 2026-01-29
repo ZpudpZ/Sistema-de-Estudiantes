@@ -1,9 +1,9 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
-
+import time
 from . import models, schemas, crud, database
-
+from sqlalchemy.exc import OperationalError
 app = FastAPI(title="Sistema de Estudiantes - Pruebas CI/CD")
 
 @app.on_event("startup")
@@ -39,3 +39,18 @@ def crear_estudiante(student: schemas.StudentCreate, db: Session = Depends(datab
 @app.get("/estudiantes/", response_model=List[schemas.StudentResponse])
 def leer_estudiantes(skip: int = 0, limit: int = 100, db: Session = Depends(database.get_db)):
     return crud.get_students(db, skip=skip, limit=limit)
+
+@app.put("/estudiantes/{student_id}", response_model=schemas.StudentResponse)
+def actualizar_estudiante(student_id: int, student: schemas.StudentCreate, db: Session = Depends(database.get_db)):
+    db_student = crud.get_student(db, student_id)
+    if not db_student:
+        raise HTTPException(status_code=404, detail="Estudiante no encontrado")
+    return crud.update_student(db=db, student_id=student_id, student_data=student)
+
+@app.delete("/estudiantes/{student_id}")
+def eliminar_estudiante(student_id: int, db: Session = Depends(database.get_db)):
+    db_student = crud.get_student(db, student_id)
+    if not db_student:
+        raise HTTPException(status_code=404, detail="Estudiante no encontrado")
+    crud.delete_student(db=db, student_id=student_id)
+    return {"mensaje": "Estudiante eliminado correctamente"}
