@@ -27,6 +27,14 @@ services:
       - mysql_data:/var/lib/mysql
     ports:
       - "3307:3306"
-
+  frontend:
+    build: ./frontend
+    restart: always
+    ports:
+      - "8501:8501"
+    depends_on:
+      - web
+    environment:
+      - API_URL=http://web:8000
 volumes:
   mysql_data:

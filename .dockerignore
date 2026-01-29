@@ -1,0 +1,7 @@
+__pycache__
+venv
+.env
+.git
+.gitignore
+mysql_data
+actions-runner
