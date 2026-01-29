@@ -1,0 +1,11 @@
+﻿{
+  "agentId": 2,
+  "agentName": "WILDER",
+  "poolId": 1,
+  "poolName": "Default",
+  "serverUrl": "https://pipelinesghubeus24.actions.githubusercontent.com/RTN4R0V6xVWGgnxXQeSZ1MTTri6PwC5ztHGEJmaXuO6Lct0pMY/",
+  "gitHubUrl": "https://github.com/ZpudpZ/Sistema-de-Estudiantes",
+  "workFolder": "_work",
+  "useV2Flow": true,
+  "serverUrlV2": "https://broker.actions.githubusercontent.com/"
+}

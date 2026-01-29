@@ -14,7 +14,7 @@ app = FastAPI(title="Sistema de Estudiantes - Pruebas CI/CD")
 
 @app.get("/")
 def read_root():
-    return {"mensaje": "API funcionando correctamente", "docs": "/docs"}
+    return {"mensaje": "V2 API desplegada automaticamente", "docs": "/docs"}
 
 @app.post("/estudiantes/", response_model=schemas.StudentResponse)
 def crear_estudiante(student: schemas.StudentCreate, db: Session = Depends(database.get_db)):
