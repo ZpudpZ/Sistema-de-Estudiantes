@@ -22,6 +22,8 @@ jobs:
           pip install httpx pytest
 
       - name: Correr Pruebas Automáticas
+        env:
+            TEST_MODE: True
         run: pytest
 
   deploy-to-server:
