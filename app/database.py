@@ -9,7 +9,6 @@ if os.getenv("TEST_MODE") == "True":
     SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
     connect_args = {"check_same_thread": False}
     engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args=connect_args)
-
 else:
     user = os.getenv("DB_USER", "user")
     password = os.getenv("DB_PASSWORD", "user_pass")

@@ -10,11 +10,11 @@ def test_read_root():
     assert response.json() == {"mensaje": "V2 API desplegada automaticamente", "docs": "/docs"}
 
 def test_create_student_validation():
-    # Crear un estudiante con datos basura (sin email)
+    # Crear un estudiante con datos (sin email)
     response = client.post("/estudiantes/", json={
         "codigo": "123",
         "nombres": "Test",
-        # Falta el email y apellido a propósito
+        # Falta el email y apellido (adrede)
     })
-    # La API debería rechazarlo (código 422 Unprocessable Entity)
+    # La API debería rechazarlo
     assert response.status_code == 422
