@@ -8,7 +8,22 @@ app = FastAPI(title="Sistema de Estudiantes - Pruebas CI/CD")
 
 @app.on_event("startup")
 def startup():
-    models.Base.metadata.create_all(bind=database.engine)
+    # Intento de conexion (60 seg)
+    max_retries = 12
+    wait_seconds = 5
+    
+    for attempt in range(max_retries):
+        try:
+            print(f"--- Intento de conexión a DB: {attempt + 1}/{max_retries} ---")
+            models.Base.metadata.create_all(bind=database.engine)
+            print("--- ¡CONEXIÓN EXITOSA! Tablas creadas/verificadas ---")
+            break
+        except OperationalError as e:
+            print(f"--- La base de datos aún no está lista. Reintentando en {wait_seconds}s... ---")
+            print(f"Detalle: {e}")
+            time.sleep(wait_seconds)
+    else:
+        print("--- ERROR: No se pudo conectar a la DB después de varios intentos ---")
 
 @app.get("/")
 def read_root():
