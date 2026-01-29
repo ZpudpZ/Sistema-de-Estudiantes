@@ -51,7 +51,6 @@ jobs:
 
       - name: Reiniciar Contenedores Docker
         run: |
-          # Bajar versión vieja y subir la nueva reconstruyendo
           docker compose down
           docker compose up -d --build
           

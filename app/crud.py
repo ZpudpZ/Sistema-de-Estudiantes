@@ -26,3 +26,24 @@ def create_student(db: Session, student: schemas.StudentCreate):
     db.commit()
     db.refresh(db_student)
     return db_student
+
+# Actualizar estudiante
+def update_student(db: Session, student_id: int, student_data: schemas.StudentBase):
+    db_student = db.query(models.Student).filter(models.Student.id == student_id).first()
+    if db_student:
+        db_student.codigo = student_data.codigo
+        db_student.nombres = student_data.nombres
+        db_student.apellidos = student_data.apellidos
+        db_student.email = student_data.email
+        db_student.semestre = student_data.semestre
+        db.commit()
+        db.refresh(db_student)
+    return db_student
+
+# Borrar estudiante
+def delete_student(db: Session, student_id: int):
+    db_student = db.query(models.Student).filter(models.Student.id == student_id).first()
+    if db_student:
+        db.delete(db_student)
+        db.commit()
+    return db_student
