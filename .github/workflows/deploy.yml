@@ -36,18 +36,24 @@ jobs:
 
       - name: Crear archivo .env en Producción
         run: |
-          echo "DB_USER=user" > .env
-          echo "DB_PASSWORD=user_pass" >> .env
-          echo "DB_NAME=db_estudiantes" >> .env
-          echo "DB_HOST=db" >> .env
-          echo "DB_PORT=3306" >> .env
-          echo "MYSQL_ROOT_PASSWORD=root_admin" >> .env
+          Remove-Item -Path .env -ErrorAction SilentlyContinue
+          
+          $content = @"
+          DB_USER=user
+          DB_PASSWORD=user_pass
+          DB_NAME=db_estudiantes
+          DB_HOST=db
+          DB_PORT=3306
+          MYSQL_ROOT_PASSWORD=root_admin
+          "@
+          
+          Set-Content -Path .env -Value $content -Encoding Ascii
 
       - name: Reiniciar Contenedores Docker
         run: |
           # Bajar versión vieja y subir la nueva reconstruyendo
-          docker-compose down
-          docker-compose up -d --build
+          docker compose down
+          docker compose up -d --build
           
       - name: Limpieza
         run: docker system prune -f

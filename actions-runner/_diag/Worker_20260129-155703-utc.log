@@ -1,0 +1,3329 @@
+[2026-01-29 15:57:03Z INFO HostContext] No proxy settings were found based on environmental variables (http_proxy/https_proxy/HTTP_PROXY/HTTPS_PROXY)
+[2026-01-29 15:57:03Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:03Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:03Z INFO HostContext] Well known config file 'Credentials': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\.credentials'
+[2026-01-29 15:57:04Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:04Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:04Z INFO HostContext] Well known config file 'Runner': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\.runner'
+[2026-01-29 15:57:04Z INFO Worker] Version: 2.331.0
+[2026-01-29 15:57:04Z INFO Worker] Commit: 39f6c643d3032f8795fa71f1482731ca90c8e038
+[2026-01-29 15:57:04Z INFO Worker] Culture: es-419
+[2026-01-29 15:57:04Z INFO Worker] UI Culture: es-MX
+[2026-01-29 15:57:04Z INFO Worker] Waiting to receive the job message from the channel.
+[2026-01-29 15:57:04Z INFO ProcessChannel] Receiving message of length 20473, with hash '0ce128e2cec5f9966f44015f155bbe5a7860fe95e42999c28d84f55e7666d480'
+[2026-01-29 15:57:04Z INFO Worker] Message received.
+[2026-01-29 15:57:05Z INFO Worker] Job message:
+ {
+  "fileTable": [
+    ".github/workflows/deploy.yml"
+  ],
+  "mask": [
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    }
+  ],
+  "steps": [
+    {
+      "type": "action",
+      "reference": {
+        "type": "repository",
+        "name": "actions/checkout",
+        "ref": "v3",
+        "repositoryType": "GitHub"
+      },
+      "displayNameToken": {
+        "type": 0,
+        "file": 1,
+        "line": 34,
+        "col": 15,
+        "lit": "Descargar código nuevo"
+      },
+      "contextName": "__actions_checkout",
+      "condition": "success()",
+      "id": "86006cb8-6b26-486e-abb9-11076bd8d928",
+      "name": "__actions_checkout"
+    },
+    {
+      "type": "action",
+      "reference": {
+        "type": "script"
+      },
+      "displayNameToken": {
+        "type": 0,
+        "file": 1,
+        "line": 37,
+        "col": 15,
+        "lit": "Crear archivo .env en Producción"
+      },
+      "contextName": "__run",
+      "inputs": {
+        "type": 2,
+        "map": [
+          {
+            "key": "script",
+            "value": {
+              "type": 0,
+              "file": 1,
+              "line": 38,
+              "col": 14,
+              "lit": "echo \"DB_USER=user\" > .env\necho \"DB_PASSWORD=user_pass\" >> .env\necho \"DB_NAME=db_estudiantes\" >> .env\necho \"DB_HOST=db\" >> .env\necho \"DB_PORT=3306\" >> .env\necho \"MYSQL_ROOT_PASSWORD=root_admin\" >> .env\n"
+            }
+          }
+        ]
+      },
+      "condition": "success()",
+      "id": "f6da1cbb-2861-4d70-b7f3-d32a81e1f54f",
+      "name": "__run"
+    },
+    {
+      "type": "action",
+      "reference": {
+        "type": "script"
+      },
+      "displayNameToken": {
+        "type": 0,
+        "file": 1,
+        "line": 46,
+        "col": 15,
+        "lit": "Reiniciar Contenedores Docker"
+      },
+      "contextName": "__run_2",
+      "inputs": {
+        "type": 2,
+        "map": [
+          {
+            "key": "script",
+            "value": {
+              "type": 0,
+              "file": 1,
+              "line": 47,
+              "col": 14,
+              "lit": "# Bajar versión vieja y subir la nueva reconstruyendo\ndocker-compose down\ndocker-compose up -d --build\n"
+            }
+          }
+        ]
+      },
+      "condition": "success()",
+      "id": "52a4ae56-fd18-4660-bba6-ae666ee9b5db",
+      "name": "__run_2"
+    },
+    {
+      "type": "action",
+      "reference": {
+        "type": "script"
+      },
+      "displayNameToken": {
+        "type": 0,
+        "file": 1,
+        "line": 52,
+        "col": 15,
+        "lit": "Limpieza"
+      },
+      "contextName": "__run_3",
+      "inputs": {
+        "type": 2,
+        "map": [
+          {
+            "key": "script",
+            "value": {
+              "type": 0,
+              "file": 1,
+              "line": 53,
+              "col": 14,
+              "lit": "docker system prune -f"
+            }
+          }
+        ]
+      },
+      "condition": "success()",
+      "id": "9f36cd50-d7b5-41b3-8cf0-f5de70a22956",
+      "name": "__run_3"
+    }
+  ],
+  "variables": {
+    "Actions.EnableHttpRedirects": {
+      "value": "true"
+    },
+    "DistributedTask.AddWarningToNode12Action": {
+      "value": "true"
+    },
+    "DistributedTask.AddWarningToNode16Action": {
+      "value": "true"
+    },
+    "DistributedTask.AllowRunnerContainerHooks": {
+      "value": "true"
+    },
+    "DistributedTask.DeprecateStepOutputCommands": {
+      "value": "true"
+    },
+    "DistributedTask.DetailUntarFailure": {
+      "value": "true"
+    },
+    "DistributedTask.EnableCompositeActions": {
+      "value": "true"
+    },
+    "DistributedTask.EnableJobServerQueueTelemetry": {
+      "value": "true"
+    },
+    "DistributedTask.EnhancedAnnotations": {
+      "value": "true"
+    },
+    "DistributedTask.ForceGithubJavascriptActionsToNode16": {
+      "value": "true"
+    },
+    "DistributedTask.ForceGithubJavascriptActionsToNode20": {
+      "value": "true"
+    },
+    "DistributedTask.LogTemplateErrorsAsDebugMessages": {
+      "value": "true"
+    },
+    "DistributedTask.MarkJobAsFailedOnWorkerCrash": {
+      "value": "true"
+    },
+    "DistributedTask.NewActionMetadata": {
+      "value": "true"
+    },
+    "DistributedTask.UploadStepSummary": {
+      "value": "true"
+    },
+    "DistributedTask.UseActionArchiveCache": {
+      "value": "true"
+    },
+    "DistributedTask.UseWhich2": {
+      "value": "true"
+    },
+    "RunService.FixEmbeddedIssues": {
+      "value": "true"
+    },
+    "actions_add_check_run_id_to_job_context": {
+      "value": "true"
+    },
+    "actions_container_action_runner_temp": {
+      "value": "true"
+    },
+    "actions_display_helpful_actions_download_errors": {
+      "value": "true"
+    },
+    "actions_runner_compare_workflow_parser": {
+      "value": "false"
+    },
+    "actions_set_orchestration_id_env_for_actions": {
+      "value": "true"
+    },
+    "actions_skip_retry_complete_job_upon_known_errors": {
+      "value": "true"
+    },
+    "actions_uses_cache_service_v2": {
+      "value": "true"
+    },
+    "github_token": {
+      "value": "***",
+      "isSecret": true
+    },
+    "system.from_run_service": {
+      "value": "true"
+    },
+    "system.github.job": {
+      "value": "deploy-to-server"
+    },
+    "system.github.launch_endpoint": {
+      "value": "https://launch.actions.githubusercontent.com"
+    },
+    "system.github.results_endpoint": {
+      "value": "https://results-receiver.actions.githubusercontent.com/"
+    },
+    "system.github.results_upload_with_sdk": {
+      "value": "true"
+    },
+    "system.github.token": {
+      "value": "***",
+      "isSecret": true
+    },
+    "system.github.token.permissions": {
+      "value": "{\"Contents\":\"read\",\"Metadata\":\"read\",\"Packages\":\"read\"}"
+    },
+    "system.orchestrationId": {
+      "value": "2b0078dc-2b03-4f66-84ee-c319b68870c3.deploy-to-server.__default"
+    },
+    "system.phaseDisplayName": {
+      "value": "deploy-to-server"
+    },
+    "system.runner.lowdiskspacethreshold": {
+      "value": "100"
+    },
+    "system.runnerEnvironment": {
+      "value": "self-hosted"
+    },
+    "system.runnerGroupName": {
+      "value": "Default"
+    }
+  },
+  "messageType": "RunnerJobRequest",
+  "plan": {
+    "scopeIdentifier": "00000000-0000-0000-0000-000000000000",
+    "planType": "actions",
+    "version": 0,
+    "planId": "2b0078dc-2b03-4f66-84ee-c319b68870c3",
+    "planGroup": null,
+    "artifactUri": null,
+    "artifactLocation": null,
+    "definition": null,
+    "owner": null
+  },
+  "timeline": {
+    "id": "2b0078dc-2b03-4f66-84ee-c319b68870c3",
+    "changeId": 0,
+    "location": null
+  },
+  "jobId": "1fe36b08-0976-5b26-a8db-4eece2bf89c3",
+  "jobDisplayName": "deploy-to-server",
+  "jobName": "__default",
+  "requestId": 0,
+  "lockedUntil": "0001-01-01T00:00:00",
+  "resources": {
+    "endpoints": [
+      {
+        "data": {
+          "ServerId": "",
+          "ServerName": "",
+          "CacheServerUrl": "https://artifactcache.actions.githubusercontent.com/RTN4R0V6xVWGgnxXQeSZ1MTTri6PwC5ztHGEJmaXuO6Lct0pMY/",
+          "FeedStreamUrl": "wss://results-receiver.actions.githubusercontent.com/_ws/ingest.sock",
+          "ResultsServiceUrl": "https://results-receiver.actions.githubusercontent.com/",
+          "PipelinesServiceUrl": "https://pipelinesghubeus24.actions.githubusercontent.com/RTN4R0V6xVWGgnxXQeSZ1MTTri6PwC5ztHGEJmaXuO6Lct0pMY/",
+          "GenerateIdTokenUrl": "",
+          "ConnectivityChecks": "[\"https://broker.actions.githubusercontent.com/health\",\"https://token.actions.githubusercontent.com/ready\",\"https://run.actions.githubusercontent.com/health\"]"
+        },
+        "name": "SystemVssConnection",
+        "url": "https://run-actions-3-azure-eastus.actions.githubusercontent.com/136/",
+        "authorization": {
+          "parameters": {
+            "AccessToken": "***"
+          },
+          "scheme": "OAuth"
+        },
+        "isShared": false,
+        "isReady": true
+      }
+    ]
+  },
+  "contextData": {
+    "github": {
+      "t": 2,
+      "d": [
+        {
+          "k": "ref",
+          "v": "refs/heads/main"
+        },
+        {
+          "k": "sha",
+          "v": "f462caddbb607349e1896be045cf748189c84a8e"
+        },
+        {
+          "k": "repository",
+          "v": "ZpudpZ/Sistema-de-Estudiantes"
+        },
+        {
+          "k": "repository_owner",
+          "v": "ZpudpZ"
+        },
+        {
+          "k": "repository_owner_id",
+          "v": "45833924"
+        },
+        {
+          "k": "repositoryUrl",
+          "v": "git://github.com/ZpudpZ/Sistema-de-Estudiantes.git"
+        },
+        {
+          "k": "run_id",
+          "v": "21485103846"
+        },
+        {
+          "k": "run_number",
+          "v": "8"
+        },
+        {
+          "k": "retention_days",
+          "v": "90"
+        },
+        {
+          "k": "run_attempt",
+          "v": "1"
+        },
+        {
+          "k": "artifact_cache_size_limit",
+          "v": "10"
+        },
+        {
+          "k": "repository_visibility",
+          "v": "public"
+        },
+        {
+          "k": "actor_id",
+          "v": "45833924"
+        },
+        {
+          "k": "actor",
+          "v": "ZpudpZ"
+        },
+        {
+          "k": "workflow",
+          "v": "CI/CD Pipeline - OTI Students"
+        },
+        {
+          "k": "head_ref",
+          "v": ""
+        },
+        {
+          "k": "base_ref",
+          "v": ""
+        },
+        {
+          "k": "event_name",
+          "v": "push"
+        },
+        {
+          "k": "server_url",
+          "v": "https://github.com"
+        },
+        {
+          "k": "api_url",
+          "v": "https://api.github.com"
+        },
+        {
+          "k": "graphql_url",
+          "v": "https://api.github.com/graphql"
+        },
+        {
+          "k": "ref_name",
+          "v": "main"
+        },
+        {
+          "k": "ref_protected",
+          "v": false
+        },
+        {
+          "k": "ref_type",
+          "v": "branch"
+        },
+        {
+          "k": "secret_source",
+          "v": "Actions"
+        },
+        {
+          "k": "event",
+          "v": {
+            "t": 2,
+            "d": [
+              {
+                "k": "after",
+                "v": "f462caddbb607349e1896be045cf748189c84a8e"
+              },
+              {
+                "k": "base_ref",
+                "v": null
+              },
+              {
+                "k": "before",
+                "v": "75b86f4ce64b56264d1cfe0bba9e600b57a6701a"
+              },
+              {
+                "k": "commits",
+                "v": {
+                  "t": 1,
+                  "a": [
+                    {
+                      "t": 2,
+                      "d": [
+                        {
+                          "k": "author",
+                          "v": {
+                            "t": 2,
+                            "d": [
+                              {
+                                "k": "email",
+                                "v": "x3wilder@gmail.com"
+                              },
+                              {
+                                "k": "name",
+                                "v": "Wilder"
+                              },
+                              {
+                                "k": "username",
+                                "v": "ZpudpZ"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "k": "committer",
+                          "v": {
+                            "t": 2,
+                            "d": [
+                              {
+                                "k": "email",
+                                "v": "x3wilder@gmail.com"
+                              },
+                              {
+                                "k": "name",
+                                "v": "Wilder"
+                              },
+                              {
+                                "k": "username",
+                                "v": "ZpudpZ"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "k": "distinct",
+                          "v": true
+                        },
+                        {
+                          "k": "id",
+                          "v": "f462caddbb607349e1896be045cf748189c84a8e"
+                        },
+                        {
+                          "k": "message",
+                          "v": "Err Syx"
+                        },
+                        {
+                          "k": "timestamp",
+                          "v": "2026-01-29T10:56:19-05:00"
+                        },
+                        {
+                          "k": "tree_id",
+                          "v": "6058bca087c416817cd6d0573c40addb8a438a1a"
+                        },
+                        {
+                          "k": "url",
+                          "v": "https://github.com/ZpudpZ/Sistema-de-Estudiantes/commit/f462caddbb607349e1896be045cf748189c84a8e"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "k": "compare",
+                "v": "https://github.com/ZpudpZ/Sistema-de-Estudiantes/compare/75b86f4ce64b...f462caddbb60"
+              },
+              {
+                "k": "created",
+                "v": false
+              },
+              {
+                "k": "deleted",
+                "v": false
+              },
+              {
+                "k": "forced",
+                "v": false
+              },
+              {
+                "k": "head_commit",
+                "v": {
+                  "t": 2,
+                  "d": [
+                    {
+                      "k": "author",
+                      "v": {
+                        "t": 2,
+                        "d": [
+                          {
+                            "k": "email",
+                            "v": "x3wilder@gmail.com"
+                          },
+                          {
+                            "k": "name",
+                            "v": "Wilder"
+                          },
+                          {
+                            "k": "username",
+                            "v": "ZpudpZ"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "k": "committer",
+                      "v": {
+                        "t": 2,
+                        "d": [
+                          {
+                            "k": "email",
+                            "v": "x3wilder@gmail.com"
+                          },
+                          {
+                            "k": "name",
+                            "v": "Wilder"
+                          },
+                          {
+                            "k": "username",
+                            "v": "ZpudpZ"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "k": "distinct",
+                      "v": true
+                    },
+                    {
+                      "k": "id",
+                      "v": "f462caddbb607349e1896be045cf748189c84a8e"
+                    },
+                    {
+                      "k": "message",
+                      "v": "Err Syx"
+                    },
+                    {
+                      "k": "timestamp",
+                      "v": "2026-01-29T10:56:19-05:00"
+                    },
+                    {
+                      "k": "tree_id",
+                      "v": "6058bca087c416817cd6d0573c40addb8a438a1a"
+                    },
+                    {
+                      "k": "url",
+                      "v": "https://github.com/ZpudpZ/Sistema-de-Estudiantes/commit/f462caddbb607349e1896be045cf748189c84a8e"
+                    }
+                  ]
+                }
+              },
+              {
+                "k": "pusher",
+                "v": {
+                  "t": 2,
+                  "d": [
+                    {
+                      "k": "email",
+                      "v": "45833924+ZpudpZ@users.noreply.github.com"
+                    },
+                    {
+                      "k": "name",
+                      "v": "ZpudpZ"
+                    }
+                  ]
+                }
+              },
+              {
+                "k": "ref",
+                "v": "refs/heads/main"
+              },
+              {
+                "k": "repository",
+                "v": {
+                  "t": 2,
+                  "d": [
+                    {
+                      "k": "allow_forking",
+                      "v": true
+                    },
+                    {
+                      "k": "archive_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/{archive_format}{/ref}"
+                    },
+                    {
+                      "k": "archived",
+                      "v": false
+                    },
+                    {
+                      "k": "assignees_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/assignees{/user}"
+                    },
+                    {
+                      "k": "blobs_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/git/blobs{/sha}"
+                    },
+                    {
+                      "k": "branches_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/branches{/branch}"
+                    },
+                    {
+                      "k": "clone_url",
+                      "v": "https://github.com/ZpudpZ/Sistema-de-Estudiantes.git"
+                    },
+                    {
+                      "k": "collaborators_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/collaborators{/collaborator}"
+                    },
+                    {
+                      "k": "comments_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/comments{/number}"
+                    },
+                    {
+                      "k": "commits_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/commits{/sha}"
+                    },
+                    {
+                      "k": "compare_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/compare/{base}...{head}"
+                    },
+                    {
+                      "k": "contents_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/contents/{+path}"
+                    },
+                    {
+                      "k": "contributors_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/contributors"
+                    },
+                    {
+                      "k": "created_at",
+                      "v": 1769696024.0
+                    },
+                    {
+                      "k": "default_branch",
+                      "v": "main"
+                    },
+                    {
+                      "k": "deployments_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/deployments"
+                    },
+                    {
+                      "k": "description",
+                      "v": null
+                    },
+                    {
+                      "k": "disabled",
+                      "v": false
+                    },
+                    {
+                      "k": "downloads_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/downloads"
+                    },
+                    {
+                      "k": "events_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/events"
+                    },
+                    {
+                      "k": "fork",
+                      "v": false
+                    },
+                    {
+                      "k": "forks",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "forks_count",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "forks_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/forks"
+                    },
+                    {
+                      "k": "full_name",
+                      "v": "ZpudpZ/Sistema-de-Estudiantes"
+                    },
+                    {
+                      "k": "git_commits_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/git/commits{/sha}"
+                    },
+                    {
+                      "k": "git_refs_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/git/refs{/sha}"
+                    },
+                    {
+                      "k": "git_tags_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/git/tags{/sha}"
+                    },
+                    {
+                      "k": "git_url",
+                      "v": "git://github.com/ZpudpZ/Sistema-de-Estudiantes.git"
+                    },
+                    {
+                      "k": "has_discussions",
+                      "v": false
+                    },
+                    {
+                      "k": "has_downloads",
+                      "v": true
+                    },
+                    {
+                      "k": "has_issues",
+                      "v": true
+                    },
+                    {
+                      "k": "has_pages",
+                      "v": false
+                    },
+                    {
+                      "k": "has_projects",
+                      "v": true
+                    },
+                    {
+                      "k": "has_wiki",
+                      "v": true
+                    },
+                    {
+                      "k": "homepage",
+                      "v": null
+                    },
+                    {
+                      "k": "hooks_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/hooks"
+                    },
+                    {
+                      "k": "html_url",
+                      "v": "https://github.com/ZpudpZ/Sistema-de-Estudiantes"
+                    },
+                    {
+                      "k": "id",
+                      "v": 1145171942.0
+                    },
+                    {
+                      "k": "is_template",
+                      "v": false
+                    },
+                    {
+                      "k": "issue_comment_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/issues/comments{/number}"
+                    },
+                    {
+                      "k": "issue_events_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/issues/events{/number}"
+                    },
+                    {
+                      "k": "issues_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/issues{/number}"
+                    },
+                    {
+                      "k": "keys_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/keys{/key_id}"
+                    },
+                    {
+                      "k": "labels_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/labels{/name}"
+                    },
+                    {
+                      "k": "language",
+                      "v": "JavaScript"
+                    },
+                    {
+                      "k": "languages_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/languages"
+                    },
+                    {
+                      "k": "license",
+                      "v": null
+                    },
+                    {
+                      "k": "master_branch",
+                      "v": "main"
+                    },
+                    {
+                      "k": "merges_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/merges"
+                    },
+                    {
+                      "k": "milestones_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/milestones{/number}"
+                    },
+                    {
+                      "k": "mirror_url",
+                      "v": null
+                    },
+                    {
+                      "k": "name",
+                      "v": "Sistema-de-Estudiantes"
+                    },
+                    {
+                      "k": "node_id",
+                      "v": "R_kgDOREHv5g"
+                    },
+                    {
+                      "k": "notifications_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/notifications{?since,all,participating}"
+                    },
+                    {
+                      "k": "open_issues",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "open_issues_count",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "owner",
+                      "v": {
+                        "t": 2,
+                        "d": [
+                          {
+                            "k": "avatar_url",
+                            "v": "https://avatars.githubusercontent.com/u/45833924?v=4"
+                          },
+                          {
+                            "k": "email",
+                            "v": "45833924+ZpudpZ@users.noreply.github.com"
+                          },
+                          {
+                            "k": "events_url",
+                            "v": "https://api.github.com/users/ZpudpZ/events{/privacy}"
+                          },
+                          {
+                            "k": "followers_url",
+                            "v": "https://api.github.com/users/ZpudpZ/followers"
+                          },
+                          {
+                            "k": "following_url",
+                            "v": "https://api.github.com/users/ZpudpZ/following{/other_user}"
+                          },
+                          {
+                            "k": "gists_url",
+                            "v": "https://api.github.com/users/ZpudpZ/gists{/gist_id}"
+                          },
+                          {
+                            "k": "gravatar_id",
+                            "v": ""
+                          },
+                          {
+                            "k": "html_url",
+                            "v": "https://github.com/ZpudpZ"
+                          },
+                          {
+                            "k": "id",
+                            "v": 45833924.0
+                          },
+                          {
+                            "k": "login",
+                            "v": "ZpudpZ"
+                          },
+                          {
+                            "k": "name",
+                            "v": "ZpudpZ"
+                          },
+                          {
+                            "k": "node_id",
+                            "v": "MDQ6VXNlcjQ1ODMzOTI0"
+                          },
+                          {
+                            "k": "organizations_url",
+                            "v": "https://api.github.com/users/ZpudpZ/orgs"
+                          },
+                          {
+                            "k": "received_events_url",
+                            "v": "https://api.github.com/users/ZpudpZ/received_events"
+                          },
+                          {
+                            "k": "repos_url",
+                            "v": "https://api.github.com/users/ZpudpZ/repos"
+                          },
+                          {
+                            "k": "site_admin",
+                            "v": false
+                          },
+                          {
+                            "k": "starred_url",
+                            "v": "https://api.github.com/users/ZpudpZ/starred{/owner}{/repo}"
+                          },
+                          {
+                            "k": "subscriptions_url",
+                            "v": "https://api.github.com/users/ZpudpZ/subscriptions"
+                          },
+                          {
+                            "k": "type",
+                            "v": "User"
+                          },
+                          {
+                            "k": "url",
+                            "v": "https://api.github.com/users/ZpudpZ"
+                          },
+                          {
+                            "k": "user_view_type",
+                            "v": "public"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "k": "private",
+                      "v": false
+                    },
+                    {
+                      "k": "pulls_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/pulls{/number}"
+                    },
+                    {
+                      "k": "pushed_at",
+                      "v": 1769702158.0
+                    },
+                    {
+                      "k": "releases_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/releases{/id}"
+                    },
+                    {
+                      "k": "size",
+                      "v": 175630.0
+                    },
+                    {
+                      "k": "ssh_url",
+                      "v": "git@github.com:ZpudpZ/Sistema-de-Estudiantes.git"
+                    },
+                    {
+                      "k": "stargazers",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "stargazers_count",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "stargazers_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/stargazers"
+                    },
+                    {
+                      "k": "statuses_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/statuses/{sha}"
+                    },
+                    {
+                      "k": "subscribers_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/subscribers"
+                    },
+                    {
+                      "k": "subscription_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/subscription"
+                    },
+                    {
+                      "k": "svn_url",
+                      "v": "https://github.com/ZpudpZ/Sistema-de-Estudiantes"
+                    },
+                    {
+                      "k": "tags_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/tags"
+                    },
+                    {
+                      "k": "teams_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/teams"
+                    },
+                    {
+                      "k": "topics",
+                      "v": {
+                        "t": 1
+                      }
+                    },
+                    {
+                      "k": "trees_url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes/git/trees{/sha}"
+                    },
+                    {
+                      "k": "updated_at",
+                      "v": "2026-01-29T15:26:42Z"
+                    },
+                    {
+                      "k": "url",
+                      "v": "https://api.github.com/repos/ZpudpZ/Sistema-de-Estudiantes"
+                    },
+                    {
+                      "k": "visibility",
+                      "v": "public"
+                    },
+                    {
+                      "k": "watchers",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "watchers_count",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "web_commit_signoff_required",
+                      "v": false
+                    }
+                  ]
+                }
+              },
+              {
+                "k": "sender",
+                "v": {
+                  "t": 2,
+                  "d": [
+                    {
+                      "k": "avatar_url",
+                      "v": "https://avatars.githubusercontent.com/u/45833924?v=4"
+                    },
+                    {
+                      "k": "events_url",
+                      "v": "https://api.github.com/users/ZpudpZ/events{/privacy}"
+                    },
+                    {
+                      "k": "followers_url",
+                      "v": "https://api.github.com/users/ZpudpZ/followers"
+                    },
+                    {
+                      "k": "following_url",
+                      "v": "https://api.github.com/users/ZpudpZ/following{/other_user}"
+                    },
+                    {
+                      "k": "gists_url",
+                      "v": "https://api.github.com/users/ZpudpZ/gists{/gist_id}"
+                    },
+                    {
+                      "k": "gravatar_id",
+                      "v": ""
+                    },
+                    {
+                      "k": "html_url",
+                      "v": "https://github.com/ZpudpZ"
+                    },
+                    {
+                      "k": "id",
+                      "v": 45833924.0
+                    },
+                    {
+                      "k": "login",
+                      "v": "ZpudpZ"
+                    },
+                    {
+                      "k": "node_id",
+                      "v": "MDQ6VXNlcjQ1ODMzOTI0"
+                    },
+                    {
+                      "k": "organizations_url",
+                      "v": "https://api.github.com/users/ZpudpZ/orgs"
+                    },
+                    {
+                      "k": "received_events_url",
+                      "v": "https://api.github.com/users/ZpudpZ/received_events"
+                    },
+                    {
+                      "k": "repos_url",
+                      "v": "https://api.github.com/users/ZpudpZ/repos"
+                    },
+                    {
+                      "k": "site_admin",
+                      "v": false
+                    },
+                    {
+                      "k": "starred_url",
+                      "v": "https://api.github.com/users/ZpudpZ/starred{/owner}{/repo}"
+                    },
+                    {
+                      "k": "subscriptions_url",
+                      "v": "https://api.github.com/users/ZpudpZ/subscriptions"
+                    },
+                    {
+                      "k": "type",
+                      "v": "User"
+                    },
+                    {
+                      "k": "url",
+                      "v": "https://api.github.com/users/ZpudpZ"
+                    },
+                    {
+                      "k": "user_view_type",
+                      "v": "public"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "k": "workflow_ref",
+          "v": "ZpudpZ/Sistema-de-Estudiantes/.github/workflows/deploy.yml@refs/heads/main"
+        },
+        {
+          "k": "workflow_sha",
+          "v": "f462caddbb607349e1896be045cf748189c84a8e"
+        },
+        {
+          "k": "repository_id",
+          "v": "1145171942"
+        },
+        {
+          "k": "triggering_actor",
+          "v": "ZpudpZ"
+        }
+      ]
+    },
+    "inputs": {
+      "t": 2
+    },
+    "job": {
+      "t": 2,
+      "d": [
+        {
+          "k": "check_run_id",
+          "v": 61891987008.0
+        }
+      ]
+    },
+    "matrix": null,
+    "needs": {
+      "t": 2,
+      "d": [
+        {
+          "k": "test-code",
+          "v": {
+            "t": 2,
+            "d": [
+              {
+                "k": "result",
+                "v": "success"
+              },
+              {
+                "k": "outputs",
+                "v": {
+                  "t": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "strategy": {
+      "t": 2,
+      "d": [
+        {
+          "k": "fail-fast",
+          "v": true
+        },
+        {
+          "k": "job-index",
+          "v": 0.0
+        },
+        {
+          "k": "job-total",
+          "v": 1.0
+        },
+        {
+          "k": "max-parallel",
+          "v": 1.0
+        }
+      ]
+    },
+    "vars": {
+      "t": 2
+    }
+  },
+  "billingOwnerId": "U_kgDOArtexA"
+}
+[2026-01-29 15:57:05Z INFO JobRunner] Job ID 1fe36b08-0976-5b26-a8db-4eece2bf89c3
+[2026-01-29 15:57:05Z INFO ConfigurationStore] currentAssemblyLocation: C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin\Runner.Worker.dll
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO ConfigurationStore] binPath: C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:05Z INFO ConfigurationStore] RootFolder: C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:05Z INFO HostContext] Well known config file 'Runner': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\.runner'
+[2026-01-29 15:57:05Z INFO ConfigurationStore] ConfigFilePath: C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\.runner
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:05Z INFO HostContext] Well known config file 'MigratedRunner': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\.runner_migrated'
+[2026-01-29 15:57:05Z INFO ConfigurationStore] MigratedConfigFilePath: C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\.runner_migrated
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:05Z INFO HostContext] Well known config file 'Credentials': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\.credentials'
+[2026-01-29 15:57:05Z INFO ConfigurationStore] CredFilePath: C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\.credentials
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:05Z INFO HostContext] Well known config file 'MigratedCredentials': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\.credentials_migrated'
+[2026-01-29 15:57:05Z INFO ConfigurationStore] MigratedCredFilePath: C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\.credentials_migrated
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:05Z INFO HostContext] Well known config file 'Service': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\.service'
+[2026-01-29 15:57:05Z INFO ConfigurationStore] ServiceConfigFilePath: C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\.service
+[2026-01-29 15:57:05Z INFO ConfigurationStore] Read setting file: 399 chars
+[2026-01-29 15:57:05Z INFO JobRunner] Initializing launch client
+[2026-01-29 15:57:05Z INFO JobServerQueue] Initializing results client
+[2026-01-29 15:57:05Z INFO ResultServer] Creating websocket client ...wss://results-receiver.actions.githubusercontent.com/_ws/ingest.sock
+[2026-01-29 15:57:05Z INFO ResultServer] Attempting to start websocket client with delay 00:00:00.
+[2026-01-29 15:57:05Z INFO JobServerQueue] Start process web console line queue.
+[2026-01-29 15:57:05Z INFO JobServerQueue] Start process file upload queue.
+[2026-01-29 15:57:05Z INFO JobServerQueue] Start results file upload queue.
+[2026-01-29 15:57:05Z INFO JobServerQueue] Starting results-based upload queue...
+[2026-01-29 15:57:05Z INFO JobServerQueue] Start process timeline update queue.
+[2026-01-29 15:57:05Z INFO ExecutionContext] Initializing Job context
+[2026-01-29 15:57:05Z INFO ExecutionContext] Initialize GitHub context
+[2026-01-29 15:57:05Z INFO ExecutionContext] Initialize Env context
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Diag': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Diag': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag'
+[2026-01-29 15:57:05Z INFO JobRunner] Starting the job execution context.
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:05Z INFO JobRunner] Validating directory permissions for: 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Tools': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_tool'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Temp': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp'
+[2026-01-29 15:57:05Z INFO JobRunner] Getting job extension.
+[2026-01-29 15:57:05Z INFO JobRunner] Initialize job. Getting all job steps.
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Diag': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Diag': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:05Z INFO HostContext] Well known config file 'Credentials': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\.credentials'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:05Z INFO HostContext] Well known config file 'SetupInfo': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\.setup_info'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:05Z INFO PipelineDirectoryManager] Loading tracking config if exists: C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_PipelineMapping\ZpudpZ/Sistema-de-Estudiantes\PipelineFolder.json
+[2026-01-29 15:57:05Z INFO PipelineDirectoryManager] Creating a new tracking config file.
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:05Z INFO PipelineDirectoryManager] Creating pipeline directory.
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:05Z INFO PipelineDirectoryManager] Creating workspace directory.
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:05Z INFO JobExtension] Downloading actions
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:05Z INFO HostContext] Well known directory 'Actions': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_actions'
+[2026-01-29 15:57:06Z INFO Worker] Listening for cancel message from the channel.
+[2026-01-29 15:57:06Z INFO Worker] Waiting for the job to complete or for a cancel message from the channel.
+[2026-01-29 15:57:06Z INFO ResultServer] Successfully started websocket client.
+[2026-01-29 15:57:06Z INFO JobServerQueue] Try to append 1 batches web console lines for record '483472b4-5d5f-4969-af02-3cd23947311d', success rate: 1/1.
+[2026-01-29 15:57:07Z INFO JobServerQueue] Job timeline record has been updated for the first time.
+[2026-01-29 15:57:07Z INFO JobServerQueue] Try to append 1 batches web console lines for record '483472b4-5d5f-4969-af02-3cd23947311d', success rate: 1/1.
+[2026-01-29 15:57:07Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:07Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:07Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:07Z INFO HostContext] Well known directory 'Actions': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_actions'
+[2026-01-29 15:57:07Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:07Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:07Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:07Z INFO HostContext] Well known directory 'Actions': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_actions'
+[2026-01-29 15:57:07Z INFO ActionManager] Save archive 'https://api.github.com/repos/actions/checkout/zipball/f43a0e5ff2bd294095638e18286ca9a3d1956744' into C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_actions\_temp_fdf5ef54-11b1-43b5-86fa-6c9a84f4c5c8\572ae5fa-1f98-410f-a52a-d24fd9bcf95a.zip.
+[2026-01-29 15:57:07Z INFO JobServerQueue] Try to append 1 batches web console lines for record '483472b4-5d5f-4969-af02-3cd23947311d', success rate: 1/1.
+[2026-01-29 15:57:09Z INFO ActionManager] Request URL: https://api.github.com/repos/actions/checkout/zipball/f43a0e5ff2bd294095638e18286ca9a3d1956744 X-GitHub-Request-Id: E6DF:1F4E12:E8E3:1DD15:697B8338 Http Status: OK
+[2026-01-29 15:57:10Z INFO ActionManager] Finished getting action repository.
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Actions': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_actions'
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Load schema file with definitions: [
+  "null",
+  "boolean",
+  "number",
+  "string",
+  "sequence",
+  "mapping",
+  "any",
+  "action-root",
+  "inputs",
+  "input",
+  "outputs",
+  "output-definition",
+  "runs",
+  "container-runs",
+  "container-runs-args",
+  "container-runs-env",
+  "node-runs",
+  "plugin-runs",
+  "composite-runs",
+  "composite-steps",
+  "composite-step",
+  "run-step",
+  "uses-step",
+  "container-runs-context",
+  "output-value",
+  "input-default-context",
+  "non-empty-string",
+  "string-steps-context",
+  "boolean-steps-context",
+  "step-env",
+  "step-if",
+  "step-with"
+]
+[2026-01-29 15:57:10Z INFO ActionManifestManager] Load schema file with definitions: [
+  "null",
+  "boolean",
+  "number",
+  "string",
+  "sequence",
+  "mapping",
+  "any",
+  "action-root",
+  "inputs",
+  "input",
+  "outputs",
+  "output-definition",
+  "runs",
+  "container-runs",
+  "container-runs-args",
+  "container-runs-env",
+  "node-runs",
+  "plugin-runs",
+  "composite-runs",
+  "composite-steps",
+  "composite-step",
+  "run-step",
+  "uses-step",
+  "container-runs-context",
+  "output-value",
+  "input-default-context",
+  "non-empty-string",
+  "string-steps-context",
+  "boolean-steps-context",
+  "step-env",
+  "step-if",
+  "step-with"
+]
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Actions': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_actions'
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Loaded action.yml file: {
+  "name": "Checkout",
+  "description": "Checkout a Git repository at a particular version",
+  "inputs": {
+    "type": 2,
+    "map": [
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 4,
+          "col": 3,
+          "lit": "repository"
+        },
+        "value": {
+          "type": 3,
+          "file": 2,
+          "line": 6,
+          "col": 14,
+          "expr": "github.repository"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 7,
+          "col": 3,
+          "lit": "ref"
+        },
+        "value": ""
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 12,
+          "col": 3,
+          "lit": "token"
+        },
+        "value": {
+          "type": 3,
+          "file": 2,
+          "line": 24,
+          "col": 14,
+          "expr": "github.token"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 25,
+          "col": 3,
+          "lit": "ssh-key"
+        },
+        "value": ""
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 37,
+          "col": 3,
+          "lit": "ssh-known-hosts"
+        },
+        "value": ""
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 42,
+          "col": 3,
+          "lit": "ssh-strict"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 47,
+          "col": 14,
+          "lit": "true"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 48,
+          "col": 3,
+          "lit": "persist-credentials"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 50,
+          "col": 14,
+          "lit": "true"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 51,
+          "col": 3,
+          "lit": "path"
+        },
+        "value": ""
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 53,
+          "col": 3,
+          "lit": "clean"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 55,
+          "col": 14,
+          "lit": "true"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 56,
+          "col": 3,
+          "lit": "sparse-checkout"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 60,
+          "col": 14,
+          "lit": ""
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 61,
+          "col": 3,
+          "lit": "sparse-checkout-cone-mode"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 64,
+          "col": 14,
+          "lit": "true"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 65,
+          "col": 3,
+          "lit": "fetch-depth"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 67,
+          "col": 14,
+          "lit": "1"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 68,
+          "col": 3,
+          "lit": "fetch-tags"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 70,
+          "col": 14,
+          "lit": "false"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 71,
+          "col": 3,
+          "lit": "lfs"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 73,
+          "col": 14,
+          "lit": "false"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 74,
+          "col": 3,
+          "lit": "submodules"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 82,
+          "col": 14,
+          "lit": "false"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 83,
+          "col": 3,
+          "lit": "set-safe-directory"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 85,
+          "col": 14,
+          "lit": "true"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 86,
+          "col": 3,
+          "lit": "github-server-url"
+        },
+        "value": ""
+      }
+    ]
+  },
+  "execution": {
+    "executionType": "nodeJS",
+    "hasPre": false,
+    "hasPost": true,
+    "script": "dist/index.js",
+    "pre": null,
+    "post": "dist/index.js",
+    "nodeVersion": "node16",
+    "cleanupCondition": "always()",
+    "initCondition": "always()"
+  },
+  "deprecated": null
+}
+[2026-01-29 15:57:10Z INFO ActionManager] Action node.js file: dist/index.js, no more preparation.
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Actions': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_actions'
+[2026-01-29 15:57:10Z INFO ActionManager] Load action that reference repository from 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_actions\actions\checkout\v3'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Actions': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_actions'
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Loaded action.yml file: {
+  "name": "Checkout",
+  "description": "Checkout a Git repository at a particular version",
+  "inputs": {
+    "type": 2,
+    "map": [
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 4,
+          "col": 3,
+          "lit": "repository"
+        },
+        "value": {
+          "type": 3,
+          "file": 2,
+          "line": 6,
+          "col": 14,
+          "expr": "github.repository"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 7,
+          "col": 3,
+          "lit": "ref"
+        },
+        "value": ""
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 12,
+          "col": 3,
+          "lit": "token"
+        },
+        "value": {
+          "type": 3,
+          "file": 2,
+          "line": 24,
+          "col": 14,
+          "expr": "github.token"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 25,
+          "col": 3,
+          "lit": "ssh-key"
+        },
+        "value": ""
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 37,
+          "col": 3,
+          "lit": "ssh-known-hosts"
+        },
+        "value": ""
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 42,
+          "col": 3,
+          "lit": "ssh-strict"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 47,
+          "col": 14,
+          "lit": "true"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 48,
+          "col": 3,
+          "lit": "persist-credentials"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 50,
+          "col": 14,
+          "lit": "true"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 51,
+          "col": 3,
+          "lit": "path"
+        },
+        "value": ""
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 53,
+          "col": 3,
+          "lit": "clean"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 55,
+          "col": 14,
+          "lit": "true"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 56,
+          "col": 3,
+          "lit": "sparse-checkout"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 60,
+          "col": 14,
+          "lit": ""
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 61,
+          "col": 3,
+          "lit": "sparse-checkout-cone-mode"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 64,
+          "col": 14,
+          "lit": "true"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 65,
+          "col": 3,
+          "lit": "fetch-depth"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 67,
+          "col": 14,
+          "lit": "1"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 68,
+          "col": 3,
+          "lit": "fetch-tags"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 70,
+          "col": 14,
+          "lit": "false"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 71,
+          "col": 3,
+          "lit": "lfs"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 73,
+          "col": 14,
+          "lit": "false"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 74,
+          "col": 3,
+          "lit": "submodules"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 82,
+          "col": 14,
+          "lit": "false"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 83,
+          "col": 3,
+          "lit": "set-safe-directory"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 85,
+          "col": 14,
+          "lit": "true"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 86,
+          "col": 3,
+          "lit": "github-server-url"
+        },
+        "value": ""
+      }
+    ]
+  },
+  "execution": {
+    "executionType": "nodeJS",
+    "hasPre": false,
+    "hasPost": true,
+    "script": "dist/index.js",
+    "pre": null,
+    "post": "dist/index.js",
+    "nodeVersion": "node16",
+    "cleanupCondition": "always()",
+    "initCondition": "always()"
+  },
+  "deprecated": null
+}
+[2026-01-29 15:57:10Z INFO ActionManager] Action pre node.js file: N/A.
+[2026-01-29 15:57:10Z INFO ActionManager] Action node.js file: dist/index.js.
+[2026-01-29 15:57:10Z INFO ActionManager] Action post node.js file: dist/index.js.
+[2026-01-29 15:57:10Z INFO JobExtension] Adding .
+[2026-01-29 15:57:10Z INFO JobExtension] Adding .
+[2026-01-29 15:57:10Z INFO JobExtension] Adding .
+[2026-01-29 15:57:10Z INFO JobExtension] Adding .
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Diag': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Diag': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Diag': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Diag': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Diag': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Diag': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Diag': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Diag': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag'
+[2026-01-29 15:57:10Z INFO JobExtension] Total accessible running process: 350.
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:10Z INFO JobExtension] Start checking server connectivity.
+[2026-01-29 15:57:10Z INFO JobExtension] Check server connectivity for https://broker.actions.githubusercontent.com/health.
+[2026-01-29 15:57:10Z INFO JobExtension] Check server connectivity for https://token.actions.githubusercontent.com/ready.
+[2026-01-29 15:57:10Z INFO JobExtension] Check server connectivity for https://run.actions.githubusercontent.com/health.
+[2026-01-29 15:57:10Z INFO JobExtension] Start checking service connectivity in background.
+[2026-01-29 15:57:10Z INFO ExecutionContext] Publish step telemetry for current step {
+  "action": "setup_job",
+  "type": "runner",
+  "stage": "Pre",
+  "stepId": "483472b4-5d5f-4969-af02-3cd23947311d",
+  "result": "succeeded",
+  "errorMessages": [],
+  "executionTimeInSeconds": 5,
+  "startTime": "2026-01-29T15:57:05.8179916Z",
+  "finishTime": "2026-01-29T15:57:10.6764153Z"
+}.
+[2026-01-29 15:57:10Z INFO JobRunner] Total job steps: 4.
+[2026-01-29 15:57:10Z INFO JobRunner] Run all job steps.
+[2026-01-29 15:57:10Z INFO StepsRunner] Processing step: DisplayName='Descargar código nuevo'
+[2026-01-29 15:57:10Z INFO StepsRunner] Evaluating: success()
+[2026-01-29 15:57:10Z INFO JobServerQueue] Try to append 1 batches web console lines for record '483472b4-5d5f-4969-af02-3cd23947311d', success rate: 1/1.
+[2026-01-29 15:57:10Z INFO StepsRunner] Result: true
+[2026-01-29 15:57:10Z INFO StepsRunner] Starting the step.
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:10Z INFO StepsRunner] Which2: 'chcp'
+[2026-01-29 15:57:10Z INFO StepsRunner] Location: 'C:\WINDOWS\system32\chcp.COM'
+[2026-01-29 15:57:10Z INFO ProcessInvokerWrapper] Starting process:
+[2026-01-29 15:57:10Z INFO ProcessInvokerWrapper]   File name: 'C:\WINDOWS\system32\chcp.COM'
+[2026-01-29 15:57:10Z INFO ProcessInvokerWrapper]   Arguments: '65001'
+[2026-01-29 15:57:10Z INFO ProcessInvokerWrapper]   Working directory: 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:10Z INFO ProcessInvokerWrapper]   Require exit code zero: 'False'
+[2026-01-29 15:57:10Z INFO ProcessInvokerWrapper]   Encoding web name:  ; code page: ''
+[2026-01-29 15:57:10Z INFO ProcessInvokerWrapper]   Force kill process on cancellation: 'False'
+[2026-01-29 15:57:10Z INFO ProcessInvokerWrapper]   Redirected STDIN: 'False'
+[2026-01-29 15:57:10Z INFO ProcessInvokerWrapper]   Persist current code page: 'True'
+[2026-01-29 15:57:10Z INFO ProcessInvokerWrapper]   Keep redirected STDIN open: 'False'
+[2026-01-29 15:57:10Z INFO ProcessInvokerWrapper]   High priority process: 'False'
+[2026-01-29 15:57:10Z INFO ProcessInvokerWrapper] Process started with process id 5208, waiting for process exit.
+[2026-01-29 15:57:10Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-01-29 15:57:10Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-01-29 15:57:10Z INFO ProcessInvokerWrapper] Finished process 5208 with exit code 0, and elapsed time 00:00:00.0410039.
+[2026-01-29 15:57:10Z INFO StepsRunner] Successfully returned to code page 65001 (UTF8)
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Actions': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_actions'
+[2026-01-29 15:57:10Z INFO ActionManager] Load action that reference repository from 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_actions\actions\checkout\v3'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Actions': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_actions'
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Loaded action.yml file: {
+  "name": "Checkout",
+  "description": "Checkout a Git repository at a particular version",
+  "inputs": {
+    "type": 2,
+    "map": [
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 4,
+          "col": 3,
+          "lit": "repository"
+        },
+        "value": {
+          "type": 3,
+          "file": 2,
+          "line": 6,
+          "col": 14,
+          "expr": "github.repository"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 7,
+          "col": 3,
+          "lit": "ref"
+        },
+        "value": ""
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 12,
+          "col": 3,
+          "lit": "token"
+        },
+        "value": {
+          "type": 3,
+          "file": 2,
+          "line": 24,
+          "col": 14,
+          "expr": "github.token"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 25,
+          "col": 3,
+          "lit": "ssh-key"
+        },
+        "value": ""
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 37,
+          "col": 3,
+          "lit": "ssh-known-hosts"
+        },
+        "value": ""
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 42,
+          "col": 3,
+          "lit": "ssh-strict"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 47,
+          "col": 14,
+          "lit": "true"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 48,
+          "col": 3,
+          "lit": "persist-credentials"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 50,
+          "col": 14,
+          "lit": "true"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 51,
+          "col": 3,
+          "lit": "path"
+        },
+        "value": ""
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 53,
+          "col": 3,
+          "lit": "clean"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 55,
+          "col": 14,
+          "lit": "true"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 56,
+          "col": 3,
+          "lit": "sparse-checkout"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 60,
+          "col": 14,
+          "lit": ""
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 61,
+          "col": 3,
+          "lit": "sparse-checkout-cone-mode"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 64,
+          "col": 14,
+          "lit": "true"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 65,
+          "col": 3,
+          "lit": "fetch-depth"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 67,
+          "col": 14,
+          "lit": "1"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 68,
+          "col": 3,
+          "lit": "fetch-tags"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 70,
+          "col": 14,
+          "lit": "false"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 71,
+          "col": 3,
+          "lit": "lfs"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 73,
+          "col": 14,
+          "lit": "false"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 74,
+          "col": 3,
+          "lit": "submodules"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 82,
+          "col": 14,
+          "lit": "false"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 83,
+          "col": 3,
+          "lit": "set-safe-directory"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 85,
+          "col": 14,
+          "lit": "true"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 86,
+          "col": 3,
+          "lit": "github-server-url"
+        },
+        "value": ""
+      }
+    ]
+  },
+  "execution": {
+    "executionType": "nodeJS",
+    "hasPre": false,
+    "hasPost": true,
+    "script": "dist/index.js",
+    "pre": null,
+    "post": "dist/index.js",
+    "nodeVersion": "node16",
+    "cleanupCondition": "always()",
+    "initCondition": "always()"
+  },
+  "deprecated": null
+}
+[2026-01-29 15:57:10Z INFO ActionManager] Action pre node.js file: N/A.
+[2026-01-29 15:57:10Z INFO ActionManager] Action node.js file: dist/index.js.
+[2026-01-29 15:57:10Z INFO ActionManager] Action post node.js file: dist/index.js.
+[2026-01-29 15:57:10Z INFO ExecutionContext] Reserve record order 6 to 10 for post job actions.
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Diag': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Diag': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Temp': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp'
+[2026-01-29 15:57:10Z INFO ExecutionContext] Write event payload to C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp\_github_workflow\event.json
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:10Z INFO HostContext] Well known directory 'Temp': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp'
+[2026-01-29 15:57:10Z INFO ExtensionManager] Getting extensions for interface: 'GitHub.Runner.Worker.IFileCommandExtension'
+[2026-01-29 15:57:10Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.AddPathFileCommand, Runner.Worker
+[2026-01-29 15:57:10Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.SetEnvFileCommand, Runner.Worker
+[2026-01-29 15:57:10Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.CreateStepSummaryCommand, Runner.Worker
+[2026-01-29 15:57:10Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.SaveStateFileCommand, Runner.Worker
+[2026-01-29 15:57:10Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.SetOutputFileCommand, Runner.Worker
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Input 'repository': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 6,
+  "col": 14,
+  "lit": "ZpudpZ/Sistema-de-Estudiantes"
+}
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Input 'ref': default value evaluate result: ""
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Input 'token': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 24,
+  "col": 14,
+  "lit": "***"
+}
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Input 'ssh-key': default value evaluate result: ""
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Input 'ssh-known-hosts': default value evaluate result: ""
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Input 'ssh-strict': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 47,
+  "col": 14,
+  "lit": "true"
+}
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Input 'persist-credentials': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 50,
+  "col": 14,
+  "lit": "true"
+}
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Input 'path': default value evaluate result: ""
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Input 'clean': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 55,
+  "col": 14,
+  "lit": "true"
+}
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Input 'sparse-checkout': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 60,
+  "col": 14,
+  "lit": ""
+}
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Input 'sparse-checkout-cone-mode': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 64,
+  "col": 14,
+  "lit": "true"
+}
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Input 'fetch-depth': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 67,
+  "col": 14,
+  "lit": "1"
+}
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Input 'fetch-tags': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 70,
+  "col": 14,
+  "lit": "false"
+}
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Input 'lfs': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 73,
+  "col": 14,
+  "lit": "false"
+}
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Input 'submodules': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 82,
+  "col": 14,
+  "lit": "false"
+}
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Input 'set-safe-directory': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 85,
+  "col": 14,
+  "lit": "true"
+}
+[2026-01-29 15:57:10Z INFO ActionManifestManagerLegacy] Input 'github-server-url': default value evaluate result: ""
+[2026-01-29 15:57:10Z INFO ExtensionManager] Getting extensions for interface: 'GitHub.Runner.Worker.IActionCommandExtension'
+[2026-01-29 15:57:10Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.InternalPluginSetRepoPathCommandExtension, Runner.Worker
+[2026-01-29 15:57:10Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.SetEnvCommandExtension, Runner.Worker
+[2026-01-29 15:57:10Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.SetOutputCommandExtension, Runner.Worker
+[2026-01-29 15:57:10Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.SaveStateCommandExtension, Runner.Worker
+[2026-01-29 15:57:10Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.AddPathCommandExtension, Runner.Worker
+[2026-01-29 15:57:10Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.AddMaskCommandExtension, Runner.Worker
+[2026-01-29 15:57:10Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.AddMatcherCommandExtension, Runner.Worker
+[2026-01-29 15:57:10Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.RemoveMatcherCommandExtension, Runner.Worker
+[2026-01-29 15:57:10Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.WarningCommandExtension, Runner.Worker
+[2026-01-29 15:57:10Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.ErrorCommandExtension, Runner.Worker
+[2026-01-29 15:57:10Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.NoticeCommandExtension, Runner.Worker
+[2026-01-29 15:57:10Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.DebugCommandExtension, Runner.Worker
+[2026-01-29 15:57:10Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.GroupCommandExtension, Runner.Worker
+[2026-01-29 15:57:10Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.EndGroupCommandExtension, Runner.Worker
+[2026-01-29 15:57:10Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.EchoCommandExtension, Runner.Worker
+[2026-01-29 15:57:10Z INFO ActionCommandManager] Register action command extension for command internal-set-repo-path
+[2026-01-29 15:57:10Z INFO ActionCommandManager] Register action command extension for command set-env
+[2026-01-29 15:57:10Z INFO ActionCommandManager] Register action command extension for command set-output
+[2026-01-29 15:57:10Z INFO ActionCommandManager] Register action command extension for command save-state
+[2026-01-29 15:57:10Z INFO ActionCommandManager] Register action command extension for command add-path
+[2026-01-29 15:57:10Z INFO ActionCommandManager] Register action command extension for command add-mask
+[2026-01-29 15:57:10Z INFO ActionCommandManager] Register action command extension for command add-matcher
+[2026-01-29 15:57:10Z INFO ActionCommandManager] Register action command extension for command remove-matcher
+[2026-01-29 15:57:10Z INFO ActionCommandManager] Register action command extension for command warning
+[2026-01-29 15:57:10Z INFO ActionCommandManager] Register action command extension for command error
+[2026-01-29 15:57:10Z INFO ActionCommandManager] Register action command extension for command notice
+[2026-01-29 15:57:10Z INFO ActionCommandManager] Register action command extension for command debug
+[2026-01-29 15:57:10Z INFO ActionCommandManager] Register action command extension for command group
+[2026-01-29 15:57:10Z INFO ActionCommandManager] Register action command extension for command endgroup
+[2026-01-29 15:57:10Z INFO ActionCommandManager] Register action command extension for command echo
+[2026-01-29 15:57:11Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:11Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:11Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:11Z INFO HostContext] Well known directory 'Externals': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\externals'
+[2026-01-29 15:57:11Z INFO ProcessInvokerWrapper] Starting process:
+[2026-01-29 15:57:11Z INFO ProcessInvokerWrapper]   File name: 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\externals\node20\bin\node.exe'
+[2026-01-29 15:57:11Z INFO ProcessInvokerWrapper]   Arguments: '"C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_actions\actions\checkout\v3\dist/index.js"'
+[2026-01-29 15:57:11Z INFO ProcessInvokerWrapper]   Working directory: 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\Sistema-de-Estudiantes\Sistema-de-Estudiantes'
+[2026-01-29 15:57:11Z INFO ProcessInvokerWrapper]   Require exit code zero: 'False'
+[2026-01-29 15:57:11Z INFO ProcessInvokerWrapper]   Encoding web name: utf-8 ; code page: '65001'
+[2026-01-29 15:57:11Z INFO ProcessInvokerWrapper]   Force kill process on cancellation: 'False'
+[2026-01-29 15:57:11Z INFO ProcessInvokerWrapper]   Redirected STDIN: 'False'
+[2026-01-29 15:57:11Z INFO ProcessInvokerWrapper]   Persist current code page: 'True'
+[2026-01-29 15:57:11Z INFO ProcessInvokerWrapper]   Keep redirected STDIN open: 'False'
+[2026-01-29 15:57:11Z INFO ProcessInvokerWrapper]   High priority process: 'False'
+[2026-01-29 15:57:11Z INFO JobServerQueue] Got a step log file to send to results service.
+[2026-01-29 15:57:11Z INFO JobServerQueue] Starting upload of step log file to results service ResultsLog, C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag\blocks\2b0078dc-2b03-4f66-84ee-c319b68870c3_483472b4-5d5f-4969-af02-3cd23947311d.1
+[2026-01-29 15:57:11Z INFO JobServerQueue] Try to upload 1 log files or attachments, success rate: 1/1.
+[2026-01-29 15:57:16Z INFO ProcessInvokerWrapper] Process started with process id 17748, waiting for process exit.
+[2026-01-29 15:57:16Z INFO JobServerQueue] Tried to upload 1 file(s) to results, success rate: 1/1.
+[2026-01-29 15:57:16Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:16Z INFO AddMaskCommandExtension] Add new secret mask with length of 76
+[2026-01-29 15:57:16Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:17Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:17Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:17Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:17Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:19Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:19Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:20Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:20Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:20Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:21Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:23Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:23Z INFO JobServerQueue] Try to append 2 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 2/2.
+[2026-01-29 15:57:24Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:26Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:27Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:28Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:29Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:30Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:30Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:30Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:30Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:31Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:31Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:31Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:32Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:32Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:32Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:33Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:33Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:33Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:33Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:34Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:34Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:35Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:36Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:37Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:38Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:40Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:40Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:40Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:40Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:41Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:41Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:42Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:43Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:43Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:43Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:44Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:44Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:44Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:47Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:47Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper] Finished process 17748 with exit code 0, and elapsed time 00:00:36.7095632.
+[2026-01-29 15:57:47Z INFO CreateStepSummaryCommand] Step Summary file (C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp\_runner_file_commands\step_summary_38ea2236-2987-4e8a-a67b-a35be9739dad) is empty; skipping attachment upload
+[2026-01-29 15:57:47Z INFO StepsRunner] Step result: 
+[2026-01-29 15:57:47Z INFO ExecutionContext] Publish step telemetry for current step {
+  "action": "actions/checkout",
+  "ref": "v3",
+  "type": "node20",
+  "stage": "Main",
+  "stepId": "86006cb8-6b26-486e-abb9-11076bd8d928",
+  "stepContextName": "__actions_checkout",
+  "hasPreStep": false,
+  "hasPostStep": true,
+  "result": "succeeded",
+  "errorMessages": [],
+  "executionTimeInSeconds": 38,
+  "startTime": "2026-01-29T15:57:10.7343119Z",
+  "finishTime": "2026-01-29T15:57:47.7520613Z"
+}.
+[2026-01-29 15:57:47Z INFO StepsRunner] No need for updating job result with current step result 'Succeeded'.
+[2026-01-29 15:57:47Z INFO StepsRunner] Current state: job state = ''
+[2026-01-29 15:57:47Z INFO StepsRunner] Processing step: DisplayName='Crear archivo .env en Producción'
+[2026-01-29 15:57:47Z INFO StepsRunner] Evaluating: success()
+[2026-01-29 15:57:47Z INFO StepsRunner] Result: true
+[2026-01-29 15:57:47Z INFO StepsRunner] Starting the step.
+[2026-01-29 15:57:47Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:47Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:47Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:47Z INFO StepsRunner] Which2: 'chcp'
+[2026-01-29 15:57:47Z INFO StepsRunner] Location: 'C:\WINDOWS\system32\chcp.COM'
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper] Starting process:
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper]   File name: 'C:\WINDOWS\system32\chcp.COM'
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper]   Arguments: '65001'
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper]   Working directory: 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper]   Require exit code zero: 'False'
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper]   Encoding web name:  ; code page: ''
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper]   Force kill process on cancellation: 'False'
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper]   Redirected STDIN: 'False'
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper]   Persist current code page: 'True'
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper]   Keep redirected STDIN open: 'False'
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper]   High priority process: 'False'
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper] Process started with process id 19500, waiting for process exit.
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper] Finished process 19500 with exit code 0, and elapsed time 00:00:00.0166325.
+[2026-01-29 15:57:47Z INFO StepsRunner] Successfully returned to code page 65001 (UTF8)
+[2026-01-29 15:57:47Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:47Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:47Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:47Z INFO HostContext] Well known directory 'Temp': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp'
+[2026-01-29 15:57:47Z INFO ExecutionContext] Write event payload to C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp\_github_workflow\event.json
+[2026-01-29 15:57:47Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:47Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:47Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:47Z INFO HostContext] Well known directory 'Temp': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp'
+[2026-01-29 15:57:47Z INFO ExtensionManager] Getting extensions for interface: 'GitHub.Runner.Worker.IFileCommandExtension'
+[2026-01-29 15:57:47Z INFO ExtensionManager] Getting extensions for interface: 'GitHub.Runner.Worker.IActionCommandExtension'
+[2026-01-29 15:57:47Z INFO ActionCommandManager] Register action command extension for command internal-set-repo-path
+[2026-01-29 15:57:47Z INFO ActionCommandManager] Register action command extension for command set-env
+[2026-01-29 15:57:47Z INFO ActionCommandManager] Register action command extension for command set-output
+[2026-01-29 15:57:47Z INFO ActionCommandManager] Register action command extension for command save-state
+[2026-01-29 15:57:47Z INFO ActionCommandManager] Register action command extension for command add-path
+[2026-01-29 15:57:47Z INFO ActionCommandManager] Register action command extension for command add-mask
+[2026-01-29 15:57:47Z INFO ActionCommandManager] Register action command extension for command add-matcher
+[2026-01-29 15:57:47Z INFO ActionCommandManager] Register action command extension for command remove-matcher
+[2026-01-29 15:57:47Z INFO ActionCommandManager] Register action command extension for command warning
+[2026-01-29 15:57:47Z INFO ActionCommandManager] Register action command extension for command error
+[2026-01-29 15:57:47Z INFO ActionCommandManager] Register action command extension for command notice
+[2026-01-29 15:57:47Z INFO ActionCommandManager] Register action command extension for command debug
+[2026-01-29 15:57:47Z INFO ActionCommandManager] Register action command extension for command group
+[2026-01-29 15:57:47Z INFO ActionCommandManager] Register action command extension for command endgroup
+[2026-01-29 15:57:47Z INFO ActionCommandManager] Register action command extension for command echo
+[2026-01-29 15:57:47Z INFO ScriptHandler] Which2: 'pwsh'
+[2026-01-29 15:57:47Z INFO ScriptHandler] pwsh: command not found. Make sure 'pwsh' is installed and its location included in the 'Path' environment variable.
+[2026-01-29 15:57:47Z INFO ScriptHandler] Defaulting to powershell
+[2026-01-29 15:57:47Z INFO ScriptHandler] Which2: 'powershell'
+[2026-01-29 15:57:47Z INFO ScriptHandler] Location: 'C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE'
+[2026-01-29 15:57:47Z INFO JobServerQueue] Try to append 1 batches web console lines for record '86006cb8-6b26-486e-abb9-11076bd8d928', success rate: 1/1.
+[2026-01-29 15:57:47Z INFO JobServerQueue] Try to append 1 batches web console lines for record 'f6da1cbb-2861-4d70-b7f3-d32a81e1f54f', success rate: 1/1.
+[2026-01-29 15:57:47Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:47Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:47Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:47Z INFO HostContext] Well known directory 'Temp': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp'
+[2026-01-29 15:57:47Z INFO ScriptHandler] Which2: 'pwsh'
+[2026-01-29 15:57:47Z INFO ScriptHandler] pwsh: command not found. Make sure 'pwsh' is installed and its location included in the 'Path' environment variable.
+[2026-01-29 15:57:47Z INFO ScriptHandler] Defaulting to powershell
+[2026-01-29 15:57:47Z INFO ScriptHandler] Which2: 'powershell'
+[2026-01-29 15:57:47Z INFO ScriptHandler] Location: 'C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE'
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper] Starting process:
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper]   File name: 'C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE'
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper]   Arguments: '-command ". 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp\6b2bbcf4-59eb-45c4-bf08-83684e829bdc.ps1'"'
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper]   Working directory: 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\Sistema-de-Estudiantes\Sistema-de-Estudiantes'
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper]   Require exit code zero: 'False'
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper]   Encoding web name:  ; code page: ''
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper]   Force kill process on cancellation: 'False'
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper]   Redirected STDIN: 'False'
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper]   Persist current code page: 'True'
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper]   Keep redirected STDIN open: 'False'
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper]   High priority process: 'False'
+[2026-01-29 15:57:47Z INFO ProcessInvokerWrapper] Process started with process id 19544, waiting for process exit.
+[2026-01-29 15:57:47Z INFO JobServerQueue] Try to upload 1 log files or attachments, success rate: 1/1.
+[2026-01-29 15:57:48Z INFO JobServerQueue] Try to append 1 batches web console lines for record 'f6da1cbb-2861-4d70-b7f3-d32a81e1f54f', success rate: 1/1.
+[2026-01-29 15:57:48Z INFO JobServerQueue] Got a step log file to send to results service.
+[2026-01-29 15:57:48Z INFO JobServerQueue] Starting upload of step log file to results service ResultsLog, C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag\blocks\2b0078dc-2b03-4f66-84ee-c319b68870c3_86006cb8-6b26-486e-abb9-11076bd8d928.1
+[2026-01-29 15:57:48Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-01-29 15:57:48Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-01-29 15:57:48Z INFO ProcessInvokerWrapper] Finished process 19544 with exit code 0, and elapsed time 00:00:01.0763786.
+[2026-01-29 15:57:48Z INFO CreateStepSummaryCommand] Step Summary file (C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp\_runner_file_commands\step_summary_e3ff8f0e-c75b-43c3-b1dc-f9657bb92fb8) is empty; skipping attachment upload
+[2026-01-29 15:57:48Z INFO StepsRunner] Step result: 
+[2026-01-29 15:57:48Z INFO ExecutionContext] Publish step telemetry for current step {
+  "action": "powershell",
+  "type": "run",
+  "stage": "Main",
+  "stepId": "f6da1cbb-2861-4d70-b7f3-d32a81e1f54f",
+  "stepContextName": "__run",
+  "result": "succeeded",
+  "errorMessages": [],
+  "executionTimeInSeconds": 2,
+  "startTime": "2026-01-29T15:57:47.7536867Z",
+  "finishTime": "2026-01-29T15:57:48.9155875Z"
+}.
+[2026-01-29 15:57:48Z INFO StepsRunner] No need for updating job result with current step result 'Succeeded'.
+[2026-01-29 15:57:48Z INFO StepsRunner] Current state: job state = ''
+[2026-01-29 15:57:48Z INFO StepsRunner] Processing step: DisplayName='Reiniciar Contenedores Docker'
+[2026-01-29 15:57:48Z INFO StepsRunner] Evaluating: success()
+[2026-01-29 15:57:48Z INFO StepsRunner] Result: true
+[2026-01-29 15:57:48Z INFO StepsRunner] Starting the step.
+[2026-01-29 15:57:48Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:48Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:48Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:48Z INFO StepsRunner] Which2: 'chcp'
+[2026-01-29 15:57:48Z INFO StepsRunner] Location: 'C:\WINDOWS\system32\chcp.COM'
+[2026-01-29 15:57:48Z INFO ProcessInvokerWrapper] Starting process:
+[2026-01-29 15:57:48Z INFO ProcessInvokerWrapper]   File name: 'C:\WINDOWS\system32\chcp.COM'
+[2026-01-29 15:57:48Z INFO ProcessInvokerWrapper]   Arguments: '65001'
+[2026-01-29 15:57:48Z INFO ProcessInvokerWrapper]   Working directory: 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:48Z INFO ProcessInvokerWrapper]   Require exit code zero: 'False'
+[2026-01-29 15:57:48Z INFO ProcessInvokerWrapper]   Encoding web name:  ; code page: ''
+[2026-01-29 15:57:48Z INFO ProcessInvokerWrapper]   Force kill process on cancellation: 'False'
+[2026-01-29 15:57:48Z INFO ProcessInvokerWrapper]   Redirected STDIN: 'False'
+[2026-01-29 15:57:48Z INFO ProcessInvokerWrapper]   Persist current code page: 'True'
+[2026-01-29 15:57:48Z INFO ProcessInvokerWrapper]   Keep redirected STDIN open: 'False'
+[2026-01-29 15:57:48Z INFO ProcessInvokerWrapper]   High priority process: 'False'
+[2026-01-29 15:57:48Z INFO ProcessInvokerWrapper] Process started with process id 26788, waiting for process exit.
+[2026-01-29 15:57:48Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-01-29 15:57:48Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-01-29 15:57:48Z INFO ProcessInvokerWrapper] Finished process 26788 with exit code 0, and elapsed time 00:00:00.0270839.
+[2026-01-29 15:57:48Z INFO StepsRunner] Successfully returned to code page 65001 (UTF8)
+[2026-01-29 15:57:48Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:48Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:48Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:48Z INFO HostContext] Well known directory 'Temp': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp'
+[2026-01-29 15:57:48Z INFO ExecutionContext] Write event payload to C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp\_github_workflow\event.json
+[2026-01-29 15:57:48Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:48Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:48Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:48Z INFO HostContext] Well known directory 'Temp': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp'
+[2026-01-29 15:57:48Z INFO ExtensionManager] Getting extensions for interface: 'GitHub.Runner.Worker.IFileCommandExtension'
+[2026-01-29 15:57:48Z INFO ExtensionManager] Getting extensions for interface: 'GitHub.Runner.Worker.IActionCommandExtension'
+[2026-01-29 15:57:48Z INFO ActionCommandManager] Register action command extension for command internal-set-repo-path
+[2026-01-29 15:57:48Z INFO ActionCommandManager] Register action command extension for command set-env
+[2026-01-29 15:57:48Z INFO ActionCommandManager] Register action command extension for command set-output
+[2026-01-29 15:57:48Z INFO ActionCommandManager] Register action command extension for command save-state
+[2026-01-29 15:57:48Z INFO ActionCommandManager] Register action command extension for command add-path
+[2026-01-29 15:57:48Z INFO ActionCommandManager] Register action command extension for command add-mask
+[2026-01-29 15:57:48Z INFO ActionCommandManager] Register action command extension for command add-matcher
+[2026-01-29 15:57:48Z INFO ActionCommandManager] Register action command extension for command remove-matcher
+[2026-01-29 15:57:48Z INFO ActionCommandManager] Register action command extension for command warning
+[2026-01-29 15:57:48Z INFO ActionCommandManager] Register action command extension for command error
+[2026-01-29 15:57:48Z INFO ActionCommandManager] Register action command extension for command notice
+[2026-01-29 15:57:48Z INFO ActionCommandManager] Register action command extension for command debug
+[2026-01-29 15:57:48Z INFO ActionCommandManager] Register action command extension for command group
+[2026-01-29 15:57:48Z INFO ActionCommandManager] Register action command extension for command endgroup
+[2026-01-29 15:57:48Z INFO ActionCommandManager] Register action command extension for command echo
+[2026-01-29 15:57:48Z INFO ScriptHandler] Which2: 'pwsh'
+[2026-01-29 15:57:48Z INFO ScriptHandler] pwsh: command not found. Make sure 'pwsh' is installed and its location included in the 'Path' environment variable.
+[2026-01-29 15:57:48Z INFO ScriptHandler] Defaulting to powershell
+[2026-01-29 15:57:48Z INFO ScriptHandler] Which2: 'powershell'
+[2026-01-29 15:57:48Z INFO ScriptHandler] Location: 'C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE'
+[2026-01-29 15:57:48Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:48Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:48Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:48Z INFO HostContext] Well known directory 'Temp': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp'
+[2026-01-29 15:57:48Z INFO ScriptHandler] Which2: 'pwsh'
+[2026-01-29 15:57:49Z INFO ScriptHandler] pwsh: command not found. Make sure 'pwsh' is installed and its location included in the 'Path' environment variable.
+[2026-01-29 15:57:49Z INFO ScriptHandler] Defaulting to powershell
+[2026-01-29 15:57:49Z INFO ScriptHandler] Which2: 'powershell'
+[2026-01-29 15:57:49Z INFO ScriptHandler] Location: 'C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE'
+[2026-01-29 15:57:49Z INFO ProcessInvokerWrapper] Starting process:
+[2026-01-29 15:57:49Z INFO ProcessInvokerWrapper]   File name: 'C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE'
+[2026-01-29 15:57:49Z INFO ProcessInvokerWrapper]   Arguments: '-command ". 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp\c139e1e4-1159-45f7-9104-132842ae59eb.ps1'"'
+[2026-01-29 15:57:49Z INFO ProcessInvokerWrapper]   Working directory: 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\Sistema-de-Estudiantes\Sistema-de-Estudiantes'
+[2026-01-29 15:57:49Z INFO ProcessInvokerWrapper]   Require exit code zero: 'False'
+[2026-01-29 15:57:49Z INFO ProcessInvokerWrapper]   Encoding web name:  ; code page: ''
+[2026-01-29 15:57:49Z INFO ProcessInvokerWrapper]   Force kill process on cancellation: 'False'
+[2026-01-29 15:57:49Z INFO ProcessInvokerWrapper]   Redirected STDIN: 'False'
+[2026-01-29 15:57:49Z INFO ProcessInvokerWrapper]   Persist current code page: 'True'
+[2026-01-29 15:57:49Z INFO ProcessInvokerWrapper]   Keep redirected STDIN open: 'False'
+[2026-01-29 15:57:49Z INFO ProcessInvokerWrapper]   High priority process: 'False'
+[2026-01-29 15:57:49Z INFO ProcessInvokerWrapper] Process started with process id 25384, waiting for process exit.
+[2026-01-29 15:57:49Z INFO JobServerQueue] Try to append 1 batches web console lines for record '52a4ae56-fd18-4660-bba6-ae666ee9b5db', success rate: 1/1.
+[2026-01-29 15:57:49Z INFO JobServerQueue] Tried to upload 1 file(s) to results, success rate: 1/1.
+[2026-01-29 15:57:49Z INFO JobServerQueue] Try to append 1 batches web console lines for record '52a4ae56-fd18-4660-bba6-ae666ee9b5db', success rate: 1/1.
+[2026-01-29 15:57:49Z INFO JobServerQueue] Try to upload 1 log files or attachments, success rate: 1/1.
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper] Finished process 25384 with exit code 1, and elapsed time 00:00:01.0005113.
+[2026-01-29 15:57:50Z INFO CreateStepSummaryCommand] Step Summary file (C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp\_runner_file_commands\step_summary_77b47eb4-bc54-40c0-8a71-af570e9d81b0) is empty; skipping attachment upload
+[2026-01-29 15:57:50Z INFO StepsRunner] Step result: Failed
+[2026-01-29 15:57:50Z INFO ExecutionContext] Publish step telemetry for current step {
+  "action": "powershell",
+  "type": "run",
+  "stage": "Main",
+  "stepId": "52a4ae56-fd18-4660-bba6-ae666ee9b5db",
+  "stepContextName": "__run_2",
+  "result": "failed",
+  "errorMessages": [
+    "Process completed with exit code 1."
+  ],
+  "executionTimeInSeconds": 2,
+  "startTime": "2026-01-29T15:57:48.9189323Z",
+  "finishTime": "2026-01-29T15:57:50.0375966Z"
+}.
+[2026-01-29 15:57:50Z INFO StepsRunner] Update job result with current step result 'Failed'.
+[2026-01-29 15:57:50Z INFO StepsRunner] Current state: job state = 'Failed'
+[2026-01-29 15:57:50Z INFO StepsRunner] Processing step: DisplayName='Limpieza'
+[2026-01-29 15:57:50Z INFO StepsRunner] Evaluating: success()
+[2026-01-29 15:57:50Z INFO StepsRunner] Result: false
+[2026-01-29 15:57:50Z INFO StepsRunner] Skipping step due to condition evaluation.
+[2026-01-29 15:57:50Z INFO StepsRunner] No need for updating job result with current step result 'Skipped'.
+[2026-01-29 15:57:50Z INFO StepsRunner] Current state: job state = 'Failed'
+[2026-01-29 15:57:50Z INFO StepsRunner] Processing step: DisplayName='Post Descargar código nuevo'
+[2026-01-29 15:57:50Z INFO StepsRunner] Evaluating: always()
+[2026-01-29 15:57:50Z INFO StepsRunner] Result: true
+[2026-01-29 15:57:50Z INFO StepsRunner] Starting the step.
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:50Z INFO StepsRunner] Which2: 'chcp'
+[2026-01-29 15:57:50Z INFO StepsRunner] Location: 'C:\WINDOWS\system32\chcp.COM'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper] Starting process:
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper]   File name: 'C:\WINDOWS\system32\chcp.COM'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper]   Arguments: '65001'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper]   Working directory: 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper]   Require exit code zero: 'False'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper]   Encoding web name:  ; code page: ''
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper]   Force kill process on cancellation: 'False'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper]   Redirected STDIN: 'False'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper]   Persist current code page: 'True'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper]   Keep redirected STDIN open: 'False'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper]   High priority process: 'False'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper] Process started with process id 20960, waiting for process exit.
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper] Finished process 20960 with exit code 0, and elapsed time 00:00:00.0174008.
+[2026-01-29 15:57:50Z INFO StepsRunner] Successfully returned to code page 65001 (UTF8)
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Actions': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_actions'
+[2026-01-29 15:57:50Z INFO ActionManager] Load action that reference repository from 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_actions\actions\checkout\v3'
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Actions': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_actions'
+[2026-01-29 15:57:50Z INFO ActionManifestManagerLegacy] Loaded action.yml file: {
+  "name": "Checkout",
+  "description": "Checkout a Git repository at a particular version",
+  "inputs": {
+    "type": 2,
+    "map": [
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 4,
+          "col": 3,
+          "lit": "repository"
+        },
+        "value": {
+          "type": 3,
+          "file": 2,
+          "line": 6,
+          "col": 14,
+          "expr": "github.repository"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 7,
+          "col": 3,
+          "lit": "ref"
+        },
+        "value": ""
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 12,
+          "col": 3,
+          "lit": "token"
+        },
+        "value": {
+          "type": 3,
+          "file": 2,
+          "line": 24,
+          "col": 14,
+          "expr": "github.token"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 25,
+          "col": 3,
+          "lit": "ssh-key"
+        },
+        "value": ""
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 37,
+          "col": 3,
+          "lit": "ssh-known-hosts"
+        },
+        "value": ""
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 42,
+          "col": 3,
+          "lit": "ssh-strict"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 47,
+          "col": 14,
+          "lit": "true"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 48,
+          "col": 3,
+          "lit": "persist-credentials"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 50,
+          "col": 14,
+          "lit": "true"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 51,
+          "col": 3,
+          "lit": "path"
+        },
+        "value": ""
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 53,
+          "col": 3,
+          "lit": "clean"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 55,
+          "col": 14,
+          "lit": "true"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 56,
+          "col": 3,
+          "lit": "sparse-checkout"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 60,
+          "col": 14,
+          "lit": ""
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 61,
+          "col": 3,
+          "lit": "sparse-checkout-cone-mode"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 64,
+          "col": 14,
+          "lit": "true"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 65,
+          "col": 3,
+          "lit": "fetch-depth"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 67,
+          "col": 14,
+          "lit": "1"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 68,
+          "col": 3,
+          "lit": "fetch-tags"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 70,
+          "col": 14,
+          "lit": "false"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 71,
+          "col": 3,
+          "lit": "lfs"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 73,
+          "col": 14,
+          "lit": "false"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 74,
+          "col": 3,
+          "lit": "submodules"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 82,
+          "col": 14,
+          "lit": "false"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 83,
+          "col": 3,
+          "lit": "set-safe-directory"
+        },
+        "value": {
+          "type": 0,
+          "file": 2,
+          "line": 85,
+          "col": 14,
+          "lit": "true"
+        }
+      },
+      {
+        "key": {
+          "type": 0,
+          "file": 2,
+          "line": 86,
+          "col": 3,
+          "lit": "github-server-url"
+        },
+        "value": ""
+      }
+    ]
+  },
+  "execution": {
+    "executionType": "nodeJS",
+    "hasPre": false,
+    "hasPost": true,
+    "script": "dist/index.js",
+    "pre": null,
+    "post": "dist/index.js",
+    "nodeVersion": "node16",
+    "cleanupCondition": "always()",
+    "initCondition": "always()"
+  },
+  "deprecated": null
+}
+[2026-01-29 15:57:50Z INFO ActionManager] Action pre node.js file: N/A.
+[2026-01-29 15:57:50Z INFO ActionManager] Action node.js file: dist/index.js.
+[2026-01-29 15:57:50Z INFO ActionManager] Action post node.js file: dist/index.js.
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Temp': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp'
+[2026-01-29 15:57:50Z INFO ExecutionContext] Write event payload to C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp\_github_workflow\event.json
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Temp': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp'
+[2026-01-29 15:57:50Z INFO ExtensionManager] Getting extensions for interface: 'GitHub.Runner.Worker.IFileCommandExtension'
+[2026-01-29 15:57:50Z INFO ActionManifestManagerLegacy] Input 'repository': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 6,
+  "col": 14,
+  "lit": "ZpudpZ/Sistema-de-Estudiantes"
+}
+[2026-01-29 15:57:50Z INFO ActionManifestManagerLegacy] Input 'ref': default value evaluate result: ""
+[2026-01-29 15:57:50Z INFO ActionManifestManagerLegacy] Input 'token': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 24,
+  "col": 14,
+  "lit": "***"
+}
+[2026-01-29 15:57:50Z INFO ActionManifestManagerLegacy] Input 'ssh-key': default value evaluate result: ""
+[2026-01-29 15:57:50Z INFO ActionManifestManagerLegacy] Input 'ssh-known-hosts': default value evaluate result: ""
+[2026-01-29 15:57:50Z INFO ActionManifestManagerLegacy] Input 'ssh-strict': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 47,
+  "col": 14,
+  "lit": "true"
+}
+[2026-01-29 15:57:50Z INFO ActionManifestManagerLegacy] Input 'persist-credentials': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 50,
+  "col": 14,
+  "lit": "true"
+}
+[2026-01-29 15:57:50Z INFO ActionManifestManagerLegacy] Input 'path': default value evaluate result: ""
+[2026-01-29 15:57:50Z INFO ActionManifestManagerLegacy] Input 'clean': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 55,
+  "col": 14,
+  "lit": "true"
+}
+[2026-01-29 15:57:50Z INFO ActionManifestManagerLegacy] Input 'sparse-checkout': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 60,
+  "col": 14,
+  "lit": ""
+}
+[2026-01-29 15:57:50Z INFO ActionManifestManagerLegacy] Input 'sparse-checkout-cone-mode': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 64,
+  "col": 14,
+  "lit": "true"
+}
+[2026-01-29 15:57:50Z INFO ActionManifestManagerLegacy] Input 'fetch-depth': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 67,
+  "col": 14,
+  "lit": "1"
+}
+[2026-01-29 15:57:50Z INFO ActionManifestManagerLegacy] Input 'fetch-tags': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 70,
+  "col": 14,
+  "lit": "false"
+}
+[2026-01-29 15:57:50Z INFO ActionManifestManagerLegacy] Input 'lfs': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 73,
+  "col": 14,
+  "lit": "false"
+}
+[2026-01-29 15:57:50Z INFO ActionManifestManagerLegacy] Input 'submodules': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 82,
+  "col": 14,
+  "lit": "false"
+}
+[2026-01-29 15:57:50Z INFO ActionManifestManagerLegacy] Input 'set-safe-directory': default value evaluate result: {
+  "type": 0,
+  "file": 2,
+  "line": 85,
+  "col": 14,
+  "lit": "true"
+}
+[2026-01-29 15:57:50Z INFO ActionManifestManagerLegacy] Input 'github-server-url': default value evaluate result: ""
+[2026-01-29 15:57:50Z INFO ExtensionManager] Getting extensions for interface: 'GitHub.Runner.Worker.IActionCommandExtension'
+[2026-01-29 15:57:50Z INFO ActionCommandManager] Register action command extension for command internal-set-repo-path
+[2026-01-29 15:57:50Z INFO ActionCommandManager] Register action command extension for command set-env
+[2026-01-29 15:57:50Z INFO ActionCommandManager] Register action command extension for command set-output
+[2026-01-29 15:57:50Z INFO ActionCommandManager] Register action command extension for command save-state
+[2026-01-29 15:57:50Z INFO ActionCommandManager] Register action command extension for command add-path
+[2026-01-29 15:57:50Z INFO ActionCommandManager] Register action command extension for command add-mask
+[2026-01-29 15:57:50Z INFO ActionCommandManager] Register action command extension for command add-matcher
+[2026-01-29 15:57:50Z INFO ActionCommandManager] Register action command extension for command remove-matcher
+[2026-01-29 15:57:50Z INFO ActionCommandManager] Register action command extension for command warning
+[2026-01-29 15:57:50Z INFO ActionCommandManager] Register action command extension for command error
+[2026-01-29 15:57:50Z INFO ActionCommandManager] Register action command extension for command notice
+[2026-01-29 15:57:50Z INFO ActionCommandManager] Register action command extension for command debug
+[2026-01-29 15:57:50Z INFO ActionCommandManager] Register action command extension for command group
+[2026-01-29 15:57:50Z INFO ActionCommandManager] Register action command extension for command endgroup
+[2026-01-29 15:57:50Z INFO ActionCommandManager] Register action command extension for command echo
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Externals': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\externals'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper] Starting process:
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper]   File name: 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\externals\node20\bin\node.exe'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper]   Arguments: '"C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_actions\actions\checkout\v3\dist/index.js"'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper]   Working directory: 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\Sistema-de-Estudiantes\Sistema-de-Estudiantes'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper]   Require exit code zero: 'False'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper]   Encoding web name: utf-8 ; code page: '65001'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper]   Force kill process on cancellation: 'False'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper]   Redirected STDIN: 'False'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper]   Persist current code page: 'True'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper]   Keep redirected STDIN open: 'False'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper]   High priority process: 'False'
+[2026-01-29 15:57:50Z INFO ProcessInvokerWrapper] Process started with process id 14516, waiting for process exit.
+[2026-01-29 15:57:50Z INFO JobServerQueue] Try to append 1 batches web console lines for record '52a4ae56-fd18-4660-bba6-ae666ee9b5db', success rate: 1/1.
+[2026-01-29 15:57:50Z INFO JobServerQueue] Try to append 1 batches web console lines for record '9fa9439b-6082-4b26-b6c9-ca31d4e849a8', success rate: 1/1.
+[2026-01-29 15:57:50Z INFO JobServerQueue] Try to append 1 batches web console lines for record '9fa9439b-6082-4b26-b6c9-ca31d4e849a8', success rate: 1/1.
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:50Z INFO HostContext] Well known directory 'Work': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work'
+[2026-01-29 15:57:50Z INFO JobServerQueue] Got a step log file to send to results service.
+[2026-01-29 15:57:50Z INFO JobServerQueue] Starting upload of step log file to results service ResultsLog, C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag\blocks\2b0078dc-2b03-4f66-84ee-c319b68870c3_f6da1cbb-2861-4d70-b7f3-d32a81e1f54f.1
+[2026-01-29 15:57:50Z INFO AddMaskCommandExtension] Add new secret mask with length of 32
+[2026-01-29 15:57:50Z INFO JobServerQueue] Try to append 1 batches web console lines for record '9fa9439b-6082-4b26-b6c9-ca31d4e849a8', success rate: 1/1.
+[2026-01-29 15:57:50Z INFO JobServerQueue] Try to upload 1 log files or attachments, success rate: 1/1.
+[2026-01-29 15:57:51Z INFO JobServerQueue] Try to append 1 batches web console lines for record '9fa9439b-6082-4b26-b6c9-ca31d4e849a8', success rate: 1/1.
+[2026-01-29 15:57:52Z INFO JobServerQueue] Got a step log file to send to results service.
+[2026-01-29 15:57:52Z INFO JobServerQueue] Starting upload of step log file to results service ResultsLog, C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag\blocks\2b0078dc-2b03-4f66-84ee-c319b68870c3_52a4ae56-fd18-4660-bba6-ae666ee9b5db.1
+[2026-01-29 15:57:52Z INFO JobServerQueue] Try to append 1 batches web console lines for record '9fa9439b-6082-4b26-b6c9-ca31d4e849a8', success rate: 1/1.
+[2026-01-29 15:57:52Z INFO JobServerQueue] Try to append 1 batches web console lines for record '9fa9439b-6082-4b26-b6c9-ca31d4e849a8', success rate: 1/1.
+[2026-01-29 15:57:53Z INFO JobServerQueue] Tried to upload 2 file(s) to results, success rate: 2/2.
+[2026-01-29 15:57:54Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-01-29 15:57:54Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-01-29 15:57:54Z INFO ProcessInvokerWrapper] Finished process 14516 with exit code 0, and elapsed time 00:00:04.3601983.
+[2026-01-29 15:57:54Z INFO CreateStepSummaryCommand] Step Summary file (C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp\_runner_file_commands\step_summary_63c0a227-d892-43d4-8e75-45a43954920c) is empty; skipping attachment upload
+[2026-01-29 15:57:54Z INFO StepsRunner] Step result: 
+[2026-01-29 15:57:54Z INFO ExecutionContext] Publish step telemetry for current step {
+  "action": "actions/checkout",
+  "ref": "v3",
+  "type": "node20",
+  "stage": "Post",
+  "stepId": "9fa9439b-6082-4b26-b6c9-ca31d4e849a8",
+  "result": "succeeded",
+  "errorMessages": [],
+  "executionTimeInSeconds": 5,
+  "startTime": "2026-01-29T15:57:50.0432848Z",
+  "finishTime": "2026-01-29T15:57:54.455853Z"
+}.
+[2026-01-29 15:57:54Z INFO StepsRunner] No need for updating job result with current step result 'Succeeded'.
+[2026-01-29 15:57:54Z INFO StepsRunner] Current state: job state = 'Failed'
+[2026-01-29 15:57:54Z INFO JobRunner] Finalize job.
+[2026-01-29 15:57:54Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:54Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:54Z INFO HostContext] Well known directory 'Diag': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag'
+[2026-01-29 15:57:54Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:57:54Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:57:54Z INFO HostContext] Well known directory 'Diag': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag'
+[2026-01-29 15:57:54Z INFO JobExtension] Initialize Env context
+[2026-01-29 15:57:54Z INFO JobExtension] Initialize steps context
+[2026-01-29 15:57:54Z INFO JobExtension] Total accessible running process: 348.
+[2026-01-29 15:57:54Z INFO JobServerQueue] Try to append 1 batches web console lines for record 'b66397d0-aa5e-458f-87da-21111b4c4ba4', success rate: 1/1.
+[2026-01-29 15:57:54Z INFO JobExtension] Inspecting process environment variables. PID: 9316 (opera)
+[2026-01-29 15:57:54Z INFO JobExtension] Inspecting process environment variables. PID: 12160 (opera)
+[2026-01-29 15:57:54Z INFO JobExtension] Inspecting process environment variables. PID: 12608 (docker)
+[2026-01-29 15:57:54Z INFO JobExtension] Inspecting process environment variables. PID: 21732 (conhost)
+[2026-01-29 15:57:54Z INFO JobExtension] Inspecting process environment variables. PID: 26952 (nvcontainer)
+[2026-01-29 15:57:54Z WARN JobExtension] Ignore exception during read process environment variables: Acceso denegado.
+[2026-01-29 15:57:54Z INFO JobServerQueue] Try to upload 1 log files or attachments, success rate: 1/1.
+[2026-01-29 15:57:55Z INFO JobExtension] Wait for all connectivity checks to finish.
+[2026-01-29 15:57:55Z INFO JobExtension] Connectivity check result: GitHub.Runner.Worker.JobExtension+CheckResult
+[2026-01-29 15:57:55Z INFO JobExtension] Connectivity check result: GitHub.Runner.Worker.JobExtension+CheckResult
+[2026-01-29 15:57:55Z INFO JobExtension] Connectivity check result: GitHub.Runner.Worker.JobExtension+CheckResult
+[2026-01-29 15:57:55Z INFO ExecutionContext] Publish step telemetry for current step {
+  "action": "complete_job",
+  "type": "runner",
+  "stage": "Post",
+  "stepId": "b66397d0-aa5e-458f-87da-21111b4c4ba4",
+  "result": "succeeded",
+  "errorMessages": [],
+  "executionTimeInSeconds": 1,
+  "startTime": "2026-01-29T15:57:54.4715444Z",
+  "finishTime": "2026-01-29T15:57:55.0191818Z"
+}.
+[2026-01-29 15:57:55Z INFO JobRunner] Job result after all job steps finish: Failed
+[2026-01-29 15:57:55Z INFO JobRunner] Completing the job execution context.
+[2026-01-29 15:57:55Z INFO JobRunner] Shutting down the job server queue.
+[2026-01-29 15:57:55Z INFO JobServerQueue] Fire signal to shutdown all queues.
+[2026-01-29 15:57:55Z INFO JobServerQueue] All queue process task stopped.
+[2026-01-29 15:57:55Z INFO JobServerQueue] Web console line queue drained.
+[2026-01-29 15:57:55Z INFO JobServerQueue] Uploading 2 files in one shot.
+[2026-01-29 15:57:55Z INFO JobServerQueue] Try to upload 2 log files or attachments, success rate: 2/2.
+[2026-01-29 15:57:55Z INFO JobServerQueue] File upload queue drained.
+[2026-01-29 15:57:55Z INFO JobServerQueue] Starting results-based upload queue...
+[2026-01-29 15:57:55Z INFO JobServerQueue] Uploading 3 file(s) in one shot through results service.
+[2026-01-29 15:57:55Z INFO JobServerQueue] Got a step log file to send to results service.
+[2026-01-29 15:57:55Z INFO JobServerQueue] Starting upload of step log file to results service ResultsLog, C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag\blocks\2b0078dc-2b03-4f66-84ee-c319b68870c3_9fa9439b-6082-4b26-b6c9-ca31d4e849a8.1
+[2026-01-29 15:57:57Z INFO JobServerQueue] Got a step log file to send to results service.
+[2026-01-29 15:57:57Z INFO JobServerQueue] Starting upload of step log file to results service ResultsLog, C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag\blocks\2b0078dc-2b03-4f66-84ee-c319b68870c3_b66397d0-aa5e-458f-87da-21111b4c4ba4.1
+[2026-01-29 15:57:58Z INFO JobServerQueue] Got a job log file to send to results service.
+[2026-01-29 15:57:58Z INFO JobServerQueue] Starting upload of job log file to results service ResultsLog, C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag\blocks\2b0078dc-2b03-4f66-84ee-c319b68870c3_1fe36b08-0976-5b26-a8db-4eece2bf89c3.1
+[2026-01-29 15:57:59Z INFO JobServerQueue] Tried to upload 3 file(s) to results, success rate: 3/3.
+[2026-01-29 15:57:59Z INFO JobServerQueue] Results upload queue drained.
+[2026-01-29 15:58:00Z INFO JobServerQueue] Timeline update queue drained.
+[2026-01-29 15:58:00Z INFO JobServerQueue] Disposing job server ...
+[2026-01-29 15:58:00Z INFO JobServerQueue] Disposing results server ...
+[2026-01-29 15:58:00Z INFO JobServerQueue] All queue process tasks have been stopped, and all queues are drained.
+[2026-01-29 15:58:00Z INFO TempDirectoryManager] Cleaning runner temp folder: C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_work\_temp
+[2026-01-29 15:58:00Z INFO HostContext] Well known directory 'Bin': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\bin'
+[2026-01-29 15:58:00Z INFO HostContext] Well known directory 'Root': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner'
+[2026-01-29 15:58:00Z INFO HostContext] Well known directory 'Diag': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag'
+[2026-01-29 15:58:00Z INFO HostContext] Well known config file 'Telemetry': 'C:\Users\Wilder_Ivan\Documents\PyCharm\Gestion de estudiantes\actions-runner\_diag\.telemetry'
+[2026-01-29 15:58:00Z INFO JobRunner] Raising job completed against run service
+[2026-01-29 15:58:01Z INFO Worker] Job completed.
