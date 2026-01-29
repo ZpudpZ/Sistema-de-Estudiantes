@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+.env
+.docker/
+.vscode/
+.idea/
+venv/
+mysql_data/

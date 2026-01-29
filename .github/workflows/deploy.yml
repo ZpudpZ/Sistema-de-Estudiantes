@@ -1,0 +1,51 @@
+name: CI/CD Pipeline - OTI Students
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  test-code:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v3
+
+      - name: Instalar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Instalar dependencias
+        run: |
+          pip install -r requirements.txt
+          pip install httpx pytest
+
+      - name: Correr Pruebas Automáticas
+        run: pytest
+
+  deploy-to-server:
+    needs: test-code
+    runs-on: self-hosted
+    
+    steps:
+      - name: Descargar código nuevo
+        uses: actions/checkout@v3
+
+      - name: Crear archivo .env en Producción
+        run: |
+          echo "DB_USER=user" > .env
+          echo "DB_PASSWORD=user_pass" >> .env
+          echo "DB_NAME=db_estudiantes" >> .env
+          echo "DB_HOST=db" >> .env
+          echo "DB_PORT=3306" >> .env
+          echo "MYSQL_ROOT_PASSWORD=root_admin" >> .env
+
+      - name: Reiniciar Contenedores Docker
+        run: |
+          # Bajar versión vieja y subir la nueva reconstruyendo
+          docker-compose down
+          docker-compose up -d --build
+          
+      - name: Limpieza
+        run: docker system prune -f
