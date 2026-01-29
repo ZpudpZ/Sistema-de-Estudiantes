@@ -52,6 +52,7 @@ jobs:
       - name: Reiniciar Contenedores Docker
         run: |
           docker compose down
+          docker ps --filter "publish=3307" -q | ForEach-Object { docker rm -f $_ }
           docker compose up -d --build
           
       - name: Limpieza
