@@ -23,7 +23,7 @@ jobs:
 
       - name: Correr Pruebas Automáticas
         env:
-            TEST_MODE: True
+            TEST_MODE: "True"
         run: pytest
 
   deploy-to-server:
