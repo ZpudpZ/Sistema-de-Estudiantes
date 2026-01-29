@@ -1,16 +1,14 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
-import time
 
 from . import models, schemas, crud, database
 
-time.sleep(10)
-
-# Crear las tablas en MySQL
-models.Base.metadata.create_all(bind=database.engine)
-
 app = FastAPI(title="Sistema de Estudiantes - Pruebas CI/CD")
+
+@app.on_event("startup")
+def startup():
+    models.Base.metadata.create_all(bind=database.engine)
 
 @app.get("/")
 def read_root():
