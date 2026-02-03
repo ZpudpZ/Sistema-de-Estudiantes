@@ -34,26 +34,34 @@ jobs:
       - name: Descargar código nuevo
         uses: actions/checkout@v3
 
-      - name: Crear archivo .env en Producción
+      - name: Generar Secretos (Docker Secrets)
         run: |
-          Remove-Item -Path .env -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force -Path secrets | Out-Null
           
-          $content = @"
-          DB_USER=user
-          DB_PASSWORD=user_pass
-          DB_NAME=db_estudiantes
-          DB_HOST=db
-          DB_PORT=3306
-          MYSQL_ROOT_PASSWORD=root_admin
-          "@
-          
-          Set-Content -Path .env -Value $content -Encoding Ascii
+          # Por ahora los ponemos hardcoded para que funcione igual que tu local
+          $secrets = @{
+              "db_user.txt"          = "user"
+              "db_password.txt"      = "user_pass"
+              "db_name.txt"          = "db_estudiantes"
+              "db_root_password.txt" = "root_admin"
+          }
+
+          foreach ($key in $secrets.Keys) {
+              $path = Join-Path "$PWD/secrets" $key
+              [System.IO.File]::WriteAllText($path, $secrets[$key])
+              Write-Host "Secreto generado: $key"
+          }
 
       - name: Reiniciar Contenedores Docker
         run: |
+          Write-Host "Deteniendo contenedores..."
           docker compose down
-          docker ps --filter "publish=3307" -q | ForEach-Object { docker rm -f $_ }
-          docker compose up -d --build
           
-      - name: Limpieza
+          Write-Host "Limpiando puerto 3307 por seguridad..."
+          docker ps --filter "publish=3307" -q | ForEach-Object { docker rm -f $_ }
+          
+          Write-Host "Construyendo y levantando..."
+          docker compose up -d --build --no-cache
+          
+      - name: Limpieza de sistema
         run: docker system prune -f
