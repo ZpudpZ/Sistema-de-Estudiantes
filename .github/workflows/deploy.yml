@@ -10,39 +10,41 @@ jobs:
     
     steps:
       - name: Descargar Código
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Generar Secretos (PowerShell)
+      - name: Generar Archivos de Configuración
+        env:
+          SEC_DB_NAME: ${{ secrets.DB_NAME }}
+          SEC_DB_USER: ${{ secrets.DB_USER }}
+          SEC_DB_PASS: ${{ secrets.DB_PASSWORD }}
+          SEC_ROOT_PASS: ${{ secrets.MYSQL_ROOT_PASSWORD }}
         run: |
           $root = Get-Location
           $secretsPath = Join-Path $root "secrets"
+          $initPath = Join-Path $root "mysql-init"
           
-          Write-Host "Creando secretos en: `$secretsPath"
           New-Item -ItemType Directory -Force -Path $secretsPath | Out-Null
+          New-Item -ItemType Directory -Force -Path $initPath | Out-Null
           
-          $mis_secretos = @{
-              "db_user.txt"          = "user"
-              "db_password.txt"      = "user_pass"
-              "db_name.txt"          = "db_estudiantes"
-              "db_root_password.txt" = "root_admin"
+          $files = @{
+              "db_name.txt"          = $env:SEC_DB_NAME
+              "db_user.txt"          = $env:SEC_DB_USER
+              "db_password.txt"      = $env:SEC_DB_PASS
+              "db_root_password.txt" = $env:SEC_ROOT_PASS
           }
 
-          foreach (`$nombre in `$mis_secretos.Keys) {
-              `$rutaArchivo = Join-Path `$secretsPath `$nombre
-              [System.IO.File]::WriteAllText(`$rutaArchivo, `$mis_secretos[`$nombre])
-              Write-Host "Generado: `$nombre"
+          foreach ($name in $files.Keys) {
+              $path = Join-Path $secretsPath $name
+              [System.IO.File]::WriteAllText($path, $files[$name])
           }
+
+          $sqlContent = "GRANT ALL PRIVILEGES ON `$($env:SEC_DB_NAME).* TO '$($env:SEC_DB_USER)'@'%'; FLUSH PRIVILEGES;"
+          $sqlPath = Join-Path $initPath "init.sql"
+          [System.IO.File]::WriteAllText($sqlPath, $sqlContent)
 
       - name: Desplegar Docker
         run: |
-          Write-Host "Deteniendo contenedores viejos"
           docker compose down
-          
-          Write-Host "Limpiando zombies"
-          docker ps --filter "publish=3307" -q | ForEach-Object { docker rm -f `$_ }
-          
-          Write-Host "Levantando sistema"
+          docker ps --filter "publish=3307" -q | ForEach-Object { docker rm -f $_ }
           docker compose up -d --build --no-cache
-          
-          Write-Host "Limpieza final"
           docker system prune -f

@@ -24,17 +24,15 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "--password=${MYSQL_ROOT_PASSWORD_CONTENT}"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$(cat /run/secrets/db_root_password)"]
       interval: 10s
       timeout: 5s
       retries: 5
-    env_file:
-      - .env
     environment:
-      MYSQL_DATABASE_FILE: /run/secrets/db_name
+      MYSQL_DATABASE: db_estudiantes
       MYSQL_USER_FILE: /run/secrets/db_user
       MYSQL_PASSWORD_FILE: /run/secrets/db_password
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD_CONTENT}
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d
@@ -43,8 +41,7 @@ services:
     secrets:
       - db_password
       - db_user
-      - db_name
-      - mysql_root_password
+      - db_root_password
 
   frontend:
     build: ./frontend
@@ -66,5 +63,5 @@ secrets:
     file: ./secrets/db_user.txt
   db_password:
     file: ./secrets/db_password.txt
-  mysql_root_password:
-    file: ./secrets/mysql_root_password.txt
+  db_root_password:
+    file: ./secrets/db_root_password.txt
