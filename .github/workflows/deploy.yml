@@ -1,0 +1,48 @@
+﻿name: CI/CD Producción Local
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy-local:
+    runs-on: self-hosted
+    
+    steps:
+      - name: Descargar Código
+        uses: actions/checkout@v3
+
+      - name: Generar Secretos (PowerShell)
+        run: |
+          $root = Get-Location
+          $secretsPath = Join-Path $root "secrets"
+          
+          Write-Host "Creando secretos en: `$secretsPath"
+          New-Item -ItemType Directory -Force -Path $secretsPath | Out-Null
+          
+          $mis_secretos = @{
+              "db_user.txt"          = "user"
+              "db_password.txt"      = "user_pass"
+              "db_name.txt"          = "db_estudiantes"
+              "db_root_password.txt" = "root_admin"
+          }
+
+          foreach (`$nombre in `$mis_secretos.Keys) {
+              `$rutaArchivo = Join-Path `$secretsPath `$nombre
+              [System.IO.File]::WriteAllText(`$rutaArchivo, `$mis_secretos[`$nombre])
+              Write-Host "Generado: `$nombre"
+          }
+
+      - name: Desplegar Docker
+        run: |
+          Write-Host "Deteniendo contenedores viejos"
+          docker compose down
+          
+          Write-Host "Limpiando zombies"
+          docker ps --filter "publish=3307" -q | ForEach-Object { docker rm -f `$_ }
+          
+          Write-Host "Levantando sistema"
+          docker compose up -d --build --no-cache
+          
+          Write-Host "Limpieza final"
+          docker system prune -f
