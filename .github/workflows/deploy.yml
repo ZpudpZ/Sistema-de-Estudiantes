@@ -1,67 +1,12 @@
-name: CI/CD Pipeline - OTI Students
+﻿name: Test Pipeline
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  test-code:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Descargar código
-        uses: actions/checkout@v3
-
-      - name: Instalar Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-
-      - name: Instalar dependencias
-        run: |
-          pip install -r requirements.txt
-          pip install httpx pytest
-
-      - name: Correr Pruebas Automáticas
-        env:
-            TEST_MODE: "True"
-        run: pytest
-
-  deploy-to-server:
-    needs: test-code
+  check-connection:
     runs-on: self-hosted
-    
     steps:
-      - name: Descargar código nuevo
-        uses: actions/checkout@v3
-
-      - name: Generar Secretos (Docker Secrets)
-        run: |
-          New-Item -ItemType Directory -Force -Path secrets | Out-Null
-          
-          # Por ahora los ponemos hardcoded para que funcione igual que tu local
-          $secrets = @{
-              "db_user.txt"          = "user"
-              "db_password.txt"      = "user_pass"
-              "db_name.txt"          = "db_estudiantes"
-              "db_root_password.txt" = "root_admin"
-          }
-
-          foreach ($key in $secrets.Keys) {
-              $path = Join-Path "$PWD/secrets" $key
-              [System.IO.File]::WriteAllText($path, $secrets[$key])
-              Write-Host "Secreto generado: $key"
-          }
-
-      - name: Reiniciar Contenedores Docker
-        run: |
-          Write-Host "Deteniendo contenedores..."
-          docker compose down
-          
-          Write-Host "Limpiando puerto 3307 por seguridad..."
-          docker ps --filter "publish=3307" -q | ForEach-Object { docker rm -f $_ }
-          
-          Write-Host "Construyendo y levantando..."
-          docker compose up -d --build --no-cache
-          
-      - name: Limpieza de sistema
-        run: docker system prune -f
+      - name: Saludo
+        run: Write-Host "¡Hola! Si lees esto, el Runner funciona."
