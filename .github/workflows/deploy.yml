@@ -1,4 +1,4 @@
-﻿name: CI/CD Producción Local
+﻿name: CI/CD
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
           $root = Get-Location
           $secretsPath = Join-Path $root "secrets"
           $initPath = Join-Path $root "mysql-init"
-          
+
           New-Item -ItemType Directory -Force -Path $secretsPath | Out-Null
           New-Item -ItemType Directory -Force -Path $initPath | Out-Null
           
@@ -35,16 +35,31 @@ jobs:
 
           foreach ($name in $files.Keys) {
               $path = Join-Path $secretsPath $name
-              [System.IO.File]::WriteAllText($path, $files[$name])
+              
+              if (-not [string]::IsNullOrWhiteSpace($files[$name])) {
+                  [System.IO.File]::WriteAllText($path, $files[$name])
+                  Write-Host "Generado: $name"
+              } else {
+                  Write-Error "¡ERROR CRÍTICO! El secreto para $name está vacío en GitHub."
+                  exit 1
+              }
           }
 
-          $sqlContent = "GRANT ALL PRIVILEGES ON `$($env:SEC_DB_NAME).* TO '$($env:SEC_DB_USER)'@'%'; FLUSH PRIVILEGES;"
+          $sqlContent = "GRANT ALL PRIVILEGES ON $($env:SEC_DB_NAME).* TO '$($env:SEC_DB_USER)'@'%'; FLUSH PRIVILEGES;"
           $sqlPath = Join-Path $initPath "init.sql"
           [System.IO.File]::WriteAllText($sqlPath, $sqlContent)
+          Write-Host "Generado: init.sql"
 
       - name: Desplegar Docker
         run: |
+          Write-Host "--- DETENIENDO CONTENEDORES ---"
           docker compose down
+          
+          Write-Host "--- LIMPIANDO PUERTOS ZOMBIES (3307) ---"
           docker ps --filter "publish=3307" -q | ForEach-Object { docker rm -f $_ }
+          
+          Write-Host "--- LEVANTANDO SISTEMA ---"
           docker compose up -d --build --no-cache
+          
+          Write-Host "--- LIMPIEZA FINAL ---"
           docker system prune -f
