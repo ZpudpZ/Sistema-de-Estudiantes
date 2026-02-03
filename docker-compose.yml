@@ -4,29 +4,48 @@ services:
   web:
     build: .
     restart: always
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     volumes:
       - .:/app
     ports:
       - "8000:8000"
     depends_on:
-      - db
-    env_file:
-      - .env
+      db:
+        condition: service_healthy
+    secrets:
+      - db_password
+      - db_user
+      - db_name
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
 
   db:
     image: mysql:8.0
     command: --default-authentication-plugin=mysql_native_password
     restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "--password=${MYSQL_ROOT_PASSWORD_CONTENT}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    env_file:
+      - .env
     environment:
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE_FILE: /run/secrets/db_name
+      MYSQL_USER_FILE: /run/secrets/db_user
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD_CONTENT}
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
     ports:
       - "3307:3306"
+    secrets:
+      - db_password
+      - db_user
+      - db_name
+      - mysql_root_password
+
   frontend:
     build: ./frontend
     restart: always
@@ -36,5 +55,16 @@ services:
       - web
     environment:
       - API_URL=http://web:8000
+
 volumes:
   mysql_data:
+
+secrets:
+  db_name:
+    file: ./secrets/db_name.txt
+  db_user:
+    file: ./secrets/db_user.txt
+  db_password:
+    file: ./secrets/db_password.txt
+  mysql_root_password:
+    file: ./secrets/mysql_root_password.txt

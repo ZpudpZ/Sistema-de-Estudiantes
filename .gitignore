@@ -1,8 +1,18 @@
-__pycache__/
-*.py[cod]
+# Archivos de entorno y secretos
 .env
+secrets/
+
+# Caché de Python
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+
+# Otros
+.DS_Store
 .docker/
 .vscode/
 .idea/
 venv/
 mysql_data/
+actions-runner/

@@ -4,26 +4,26 @@ from typing import List
 import time
 from . import models, schemas, crud, database
 from sqlalchemy.exc import OperationalError
+
 app = FastAPI(title="Sistema de Estudiantes - Pruebas CI/CD")
 
 @app.on_event("startup")
 def startup():
-    # Intento de conexion (60 seg)
     max_retries = 12
     wait_seconds = 5
-    
+
     for attempt in range(max_retries):
         try:
-            print(f"--- Intento de conexión a DB: {attempt + 1}/{max_retries} ---")
+            print(f"\nIntento de conexión a DB: {attempt + 1}/{max_retries}\n")
             models.Base.metadata.create_all(bind=database.engine)
-            print("--- ¡CONEXIÓN EXITOSA! Tablas creadas/verificadas ---")
+            print("\nTablas creadas/verificadas\n")
             break
         except OperationalError as e:
-            print(f"--- La base de datos aún no está lista. Reintentando en {wait_seconds}s... ---")
+            print(f"\nLa base de datos aún no está lista. Reintentando en {wait_seconds}s... \n")
             print(f"Detalle: {e}")
             time.sleep(wait_seconds)
     else:
-        print("--- ERROR: No se pudo conectar a la DB después de varios intentos ---")
+        print("\nERROR: No se pudo conectar a la DB después de varios intentos\n")
 
 @app.get("/")
 def read_root():
@@ -39,6 +39,13 @@ def crear_estudiante(student: schemas.StudentCreate, db: Session = Depends(datab
 @app.get("/estudiantes/", response_model=List[schemas.StudentResponse])
 def leer_estudiantes(skip: int = 0, limit: int = 100, db: Session = Depends(database.get_db)):
     return crud.get_students(db, skip=skip, limit=limit)
+
+@app.get("/estudiantes/{student_id}", response_model=schemas.StudentResponse)
+def leer_estudiante_por_id(student_id: int, db: Session = Depends(database.get_db)):
+    db_student = crud.get_student(db, student_id=student_id)
+    if db_student is None:
+        raise HTTPException(status_code=404, detail="Estudiante no encontrado")
+    return db_student
 
 @app.put("/estudiantes/{student_id}", response_model=schemas.StudentResponse)
 def actualizar_estudiante(student_id: int, student: schemas.StudentCreate, db: Session = Depends(database.get_db)):
