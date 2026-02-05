@@ -71,4 +71,4 @@ jobs:
           docker compose up -d --build --no-cache
           
           Write-Host " LIMPIEZA FINAL"
-          docker system prune -f
+          # docker system prune -f
