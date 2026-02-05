@@ -2,11 +2,11 @@ import streamlit as st
 import requests
 import pandas as pd
 import time
+import re
 from components.header import load_css, render_header, section_title
 
 st.set_page_config(
     page_title="SIGA | UNAP",
-    # Sistema Integrado de Gestión Académica
     layout="wide",
     page_icon="https://aulavirtual2.unap.edu.pe/images/themes/unap/favicon.ico"
 )
@@ -16,10 +16,28 @@ render_header()
 
 API_URL = "http://web:8000"
 
-# NAVEGACION
+def validar_datos(codigo, nombres, apellidos):
+    if not codigo.isdigit():
+        return False, "El Código de Matrícula debe contener solo números."
+    if len(codigo) != 6:
+        return False, f"El Código debe tener exactamente 6 dígitos (actual: {len(codigo)})."
+
+    patron_texto = r"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
+    
+    if not re.match(patron_texto, nombres):
+        return False, "El Nombre contiene caracteres inválidos (números o símbolos)."
+    if len(nombres.strip()) < 2:
+        return False, "El Nombre es demasiado corto."
+        
+    if not re.match(patron_texto, apellidos):
+        return False, "El Apellido contiene caracteres inválidos (números o símbolos)."
+    if len(apellidos.strip()) < 2:
+        return False, "El Apellido es demasiado corto."
+
+    return True, ""
+
 tab1, tab2, tab3 = st.tabs(["DIRECTORIO", "INSCRIPCIÓN", "GESTIÓN"])
 
-# LISTADO
 with tab1:
     section_title("Listado General de Estudiantes", "https://cdn-icons-png.flaticon.com/512/3135/3135715.png")
 
@@ -51,7 +69,6 @@ with tab1:
     except Exception as e:
         st.error(f"Error de conexión con API: {e}")
 
-# REGISTRO
 with tab2:
     section_title("Ficha de Inscripción", "https://cdn-icons-png.flaticon.com/512/2921/2921222.png")
     
@@ -59,7 +76,7 @@ with tab2:
         with st.form("add_form", clear_on_submit=True):
             c1, c2 = st.columns(2)
             with c1:
-                codigo = st.text_input("Código de Matrícula")
+                codigo = st.text_input("Código de Matrícula", max_chars=7)
                 nombres = st.text_input("Nombres")
                 semestre = st.number_input("Semestre", 1, 12, 1)
             with c2:
@@ -68,7 +85,9 @@ with tab2:
 
             st.markdown("<br>", unsafe_allow_html=True)
             if st.form_submit_button("Registrar Postulante"):
-                if codigo and nombres and apellidos:
+                es_valido, mensaje_error = validar_datos(codigo, nombres, apellidos)
+
+                if es_valido:
                     payload = {"codigo": codigo, "nombres": nombres, "apellidos": apellidos, "email": email, "semestre": semestre}
                     try:
                         res = requests.post(f"{API_URL}/estudiantes/", json=payload)
@@ -81,9 +100,8 @@ with tab2:
                     except Exception as e:
                         st.error(f"Error de Red: {e}")
                 else:
-                    st.warning("Validación: Debe completar los campos obligatorios.")
+                    st.warning(f"Validación: {mensaje_error}")
 
-# GESTIÓN
 with tab3:
     section_title("Gestión y Mantenimiento", "https://cdn-icons-png.flaticon.com/512/3953/3953226.png")
     
@@ -108,21 +126,29 @@ with tab3:
         with st.expander("Editar Información Académica", expanded=True):
             with st.form("edit_form"):
                 ec1, ec2 = st.columns(2)
-                e_cod = ec1.text_input("Código", value=stu['codigo'])
+                e_cod = ec1.text_input("Código", value=stu['codigo'], max_chars=7)
                 e_nom = ec1.text_input("Nombres", value=stu['nombres'])
                 e_sem = ec1.number_input("Semestre", value=stu['semestre'])
                 e_ape = ec2.text_input("Apellidos", value=stu['apellidos'])
                 e_ema = ec2.text_input("Email", value=stu['email'])
 
                 if st.form_submit_button("Guardar Cambios"):
-                    pay = {"codigo": e_cod, "nombres": e_nom, "apellidos": e_ape, "email": e_ema, "semestre": e_sem}
-                    requests.put(f"{API_URL}/estudiantes/{stu['id']}", json=pay)
-                    st.success("Datos actualizados correctamente.")
-                    time.sleep(1)
-                    st.rerun()
+                    es_valido, mensaje_error = validar_datos(e_cod, e_nom, e_ape)
+
+                    if es_valido:
+                        pay = {"codigo": e_cod, "nombres": e_nom, "apellidos": e_ape, "email": e_ema, "semestre": e_sem}
+                        try:
+                            requests.put(f"{API_URL}/estudiantes/{stu['id']}", json=pay)
+                            st.success("Datos actualizados correctamente.")
+                            time.sleep(1)
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"Error: {e}")
+                    else:
+                        st.warning(f"No se pudo guardar: {mensaje_error}")
 
         st.markdown("---")
-        if st.button("ELIMINAR REGISTRO PERMANENTEMENTE"):
+        if st.button("ELIMINAR REGISTRO"):
             requests.delete(f"{API_URL}/estudiantes/{stu['id']}")
             st.warning("Registro eliminado del sistema.")
             del st.session_state['student_found']
