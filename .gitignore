@@ -1,11 +1,24 @@
-.env
-secrets/
-venv/
-mysql_data/
+# Python & entorno virtual
 __pycache__/
 *.py[cod]
+venv/
+.env
+# IDEs
 .idea/
 .vscode/
 .DS_Store
-actions-runner/
+
+# Configuracion local y datos sensibles
+secrets/
+mysql_data/
+*.log
+
+# Base de datos
+*.db
+*.sqlite
+
+# Testeo
+.pytest_cache/
+
+# Infraestructura de CI/CD
 actions-runner/
