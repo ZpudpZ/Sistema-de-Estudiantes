@@ -14,13 +14,13 @@ jobs:
 
       - name: Ejecutar Pruebas (CI)
         run: |
-          Write-Host "\n CONSTRUYENDO ENTORNO DE PRUEBAS\n"
+          Write-Host " CONSTRUYENDO ENTORNO DE PRUEBAS"
           docker build -t app-test-image .
 
-          Write-Host "\n EJECUTANDO SUITE DE TESTS\n"
+          Write-Host " EJECUTANDO SUITE DE TESTS"
           docker run --rm app-test-image pytest tests/
           
-          Write-Host "\n PRUEBAS APROBADAS. PROCEDIENDO A CONFIGURACIÓN\n"
+          Write-Host " PRUEBAS APROBADAS. PROCEDIENDO"
 
       - name: Generar Archivos de Configuración
         env:
@@ -45,12 +45,11 @@ jobs:
 
           foreach ($name in $files.Keys) {
               $path = Join-Path $secretsPath $name
-              
               if (-not [string]::IsNullOrWhiteSpace($files[$name])) {
                   [System.IO.File]::WriteAllText($path, $files[$name])
                   Write-Host "Generado: $name"
               } else {
-                  Write-Error "ERROR! El secreto para $name está vacío en GitHub."
+                  Write-Error "ERROR: El secreto para $name esta vacio."
                   exit 1
               }
           }
@@ -58,18 +57,18 @@ jobs:
           $sqlContent = "GRANT ALL PRIVILEGES ON $($env:SEC_DB_NAME).* TO '$($env:SEC_DB_USER)'@'%'; FLUSH PRIVILEGES;"
           $sqlPath = Join-Path $initPath "init.sql"
           [System.IO.File]::WriteAllText($sqlPath, $sqlContent)
-          Write-Host "\n Generado: init.sql\n"
+          Write-Host "Generado: init.sql"
 
       - name: Desplegar Docker
         run: |
-          Write-Host "\n DETENIENDO CONTENEDORES\n"
+          Write-Host " DETENIENDO CONTENEDORES"
           docker compose down
           
-          Write-Host "\n LIMPIANDO PUERTOS ZOMBIES (3307)\n"
+          Write-Host " LIMPIANDO PUERTOS (3307) "
           docker ps --filter "publish=3307" -q | ForEach-Object { docker rm -f $_ }
           
-          Write-Host "\n LEVANTANDO SISTEMA\n"
+          Write-Host " LEVANTANDO SISTEMA "
           docker compose up -d --build --no-cache
           
-          Write-Host "\n LIMPIEZA FINAL\n"
+          Write-Host " LIMPIEZA FINAL"
           docker system prune -f
