@@ -9,20 +9,20 @@ jobs:
     runs-on: self-hosted
     
     steps:
-      - name: Descargar Código
+      - name: Descargar Codigo
         uses: actions/checkout@v4
 
-      - name: Ejecutar Pruebas (CI)
+      - name: Ejecutar Pruebas CI
         run: |
-          Write-Host " CONSTRUYENDO ENTORNO DE PRUEBAS"
+          Write-Host "CONSTRUYENDO ENTORNO DE PRUEBAS"
           docker build -t app-test-image .
 
-          Write-Host " EJECUTANDO SUITE DE TESTS"
+          Write-Host "EJECUTANDO SUITE DE TESTS"
           docker run --rm app-test-image pytest tests/
           
-          Write-Host " PRUEBAS APROBADAS. PROCEDIENDO"
+          Write-Host "PRUEBAS APROBADAS"
 
-      - name: Generar Archivos de Configuración
+      - name: Generar Archivos de Configuracion
         env:
           SEC_DB_NAME: ${{ secrets.DB_NAME }}
           SEC_DB_USER: ${{ secrets.DB_USER }}
@@ -61,14 +61,14 @@ jobs:
 
       - name: Desplegar Docker
         run: |
-          Write-Host " DETENIENDO CONTENEDORES"
+          Write-Host "DETENIENDO CONTENEDORES"
           docker compose down
           
-          Write-Host " LIMPIANDO PUERTOS (3307) "
+          Write-Host "LIMPIANDO PUERTOS"
           docker ps --filter "publish=3307" -q | ForEach-Object { docker rm -f $_ }
           
-          Write-Host " LEVANTANDO SISTEMA "
-          docker compose up -d --build --no-cache
+          Write-Host "LEVANTANDO SISTEMA"
+          docker compose up -d --build
           
-          Write-Host " LIMPIEZA FINAL"
-          # docker system prune -f
+          Write-Host "LIMPIEZA FINAL"
+          docker system prune -f
