@@ -40,6 +40,14 @@ def crear_estudiante(student: schemas.StudentCreate, db: Session = Depends(datab
 def leer_estudiantes(skip: int = 0, limit: int = 100, db: Session = Depends(database.get_db)):
     return crud.get_students(db, skip=skip, limit=limit)
 
+# --- Endpoint agregado para buscar por Código ---
+@app.get("/estudiantes/buscar/{codigo}", response_model=schemas.StudentResponse)
+def leer_estudiante_por_codigo(codigo: str, db: Session = Depends(database.get_db)):
+    db_student = crud.get_student_by_code(db, codigo=codigo)
+    if db_student is None:
+        raise HTTPException(status_code=404, detail="Estudiante no encontrado")
+    return db_student
+
 @app.get("/estudiantes/{student_id}", response_model=schemas.StudentResponse)
 def leer_estudiante_por_id(student_id: int, db: Session = Depends(database.get_db)):
     db_student = crud.get_student(db, student_id=student_id)

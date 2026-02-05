@@ -17,6 +17,7 @@ render_header()
 API_URL = "http://web:8000"
 
 def validar_datos(codigo, nombres, apellidos):
+    # CORRECCIÓN: Validamos que sean exactamente 6 dígitos
     if not codigo.isdigit():
         return False, "El Código de Matrícula debe contener solo números."
     if len(codigo) != 6:
@@ -76,7 +77,8 @@ with tab2:
         with st.form("add_form", clear_on_submit=True):
             c1, c2 = st.columns(2)
             with c1:
-                codigo = st.text_input("Código de Matrícula", max_chars=7)
+                # CORRECCIÓN: max_chars=6
+                codigo = st.text_input("Código de Matrícula", max_chars=6)
                 nombres = st.text_input("Nombres")
                 semestre = st.number_input("Semestre", 1, 12, 1)
             with c2:
@@ -107,16 +109,25 @@ with tab3:
     
     col_search, _ = st.columns([2, 4])
     with col_search:
-        search_id = st.number_input("ID del Estudiante", min_value=1, step=1)
+        # CORRECCIÓN: max_chars=6
+        search_code = st.text_input("Buscar por Código de Matrícula", max_chars=6)
         if st.button("Consultar Base de Datos"):
-            try:
-                r = requests.get(f"{API_URL}/estudiantes/{search_id}")
-                if r.status_code == 200:
-                    st.session_state['student_found'] = r.json()
-                else:
-                    st.warning("No se encontraron resultados para ese ID.")
-            except Exception as e:
-                st.error(f"Error: {e}")
+            if not search_code:
+                st.warning("Ingrese un código para buscar.")
+            else:
+                try:
+                    # OJO: Si el backend no tiene este endpoint, dará 404 y saldrá el warning de abajo
+                    r = requests.get(f"{API_URL}/estudiantes/buscar/{search_code}")
+                    if r.status_code == 200:
+                        st.session_state['student_found'] = r.json()
+                    elif r.status_code == 404:
+                        st.warning("No se encontró ningún estudiante con ese código.")
+                        if 'student_found' in st.session_state:
+                            del st.session_state['student_found']
+                    else:
+                        st.error(f"Error del servidor: {r.status_code}")
+                except Exception as e:
+                    st.error(f"Error: {e}")
 
     if 'student_found' in st.session_state:
         stu = st.session_state['student_found']
@@ -126,7 +137,8 @@ with tab3:
         with st.expander("Editar Información Académica", expanded=True):
             with st.form("edit_form"):
                 ec1, ec2 = st.columns(2)
-                e_cod = ec1.text_input("Código", value=stu['codigo'], max_chars=7)
+                # CORRECCIÓN: max_chars=6
+                e_cod = ec1.text_input("Código", value=stu['codigo'], max_chars=6)
                 e_nom = ec1.text_input("Nombres", value=stu['nombres'])
                 e_sem = ec1.number_input("Semestre", value=stu['semestre'])
                 e_ape = ec2.text_input("Apellidos", value=stu['apellidos'])
@@ -139,6 +151,13 @@ with tab3:
                         pay = {"codigo": e_cod, "nombres": e_nom, "apellidos": e_ape, "email": e_ema, "semestre": e_sem}
                         try:
                             requests.put(f"{API_URL}/estudiantes/{stu['id']}", json=pay)
+                            
+                            st.session_state['student_found']['codigo'] = e_cod
+                            st.session_state['student_found']['nombres'] = e_nom
+                            st.session_state['student_found']['apellidos'] = e_ape
+                            st.session_state['student_found']['email'] = e_ema
+                            st.session_state['student_found']['semestre'] = e_sem
+                            
                             st.success("Datos actualizados correctamente.")
                             time.sleep(1)
                             st.rerun()
