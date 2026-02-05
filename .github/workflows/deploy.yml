@@ -12,6 +12,16 @@ jobs:
       - name: Descargar Código
         uses: actions/checkout@v4
 
+      - name: Ejecutar Pruebas (CI)
+        run: |
+          Write-Host "\n CONSTRUYENDO ENTORNO DE PRUEBAS\n"
+          docker build -t app-test-image .
+
+          Write-Host "\n EJECUTANDO SUITE DE TESTS\n"
+          docker run --rm app-test-image pytest tests/
+          
+          Write-Host "\n PRUEBAS APROBADAS. PROCEDIENDO A CONFIGURACIÓN\n"
+
       - name: Generar Archivos de Configuración
         env:
           SEC_DB_NAME: ${{ secrets.DB_NAME }}
@@ -40,7 +50,7 @@ jobs:
                   [System.IO.File]::WriteAllText($path, $files[$name])
                   Write-Host "Generado: $name"
               } else {
-                  Write-Error "¡ERROR CRÍTICO! El secreto para $name está vacío en GitHub."
+                  Write-Error "ERROR! El secreto para $name está vacío en GitHub."
                   exit 1
               }
           }
@@ -48,18 +58,18 @@ jobs:
           $sqlContent = "GRANT ALL PRIVILEGES ON $($env:SEC_DB_NAME).* TO '$($env:SEC_DB_USER)'@'%'; FLUSH PRIVILEGES;"
           $sqlPath = Join-Path $initPath "init.sql"
           [System.IO.File]::WriteAllText($sqlPath, $sqlContent)
-          Write-Host "Generado: init.sql"
+          Write-Host "\n Generado: init.sql\n"
 
       - name: Desplegar Docker
         run: |
-          Write-Host "--- DETENIENDO CONTENEDORES ---"
+          Write-Host "\n DETENIENDO CONTENEDORES\n"
           docker compose down
           
-          Write-Host "--- LIMPIANDO PUERTOS ZOMBIES (3307) ---"
+          Write-Host "\n LIMPIANDO PUERTOS ZOMBIES (3307)\n"
           docker ps --filter "publish=3307" -q | ForEach-Object { docker rm -f $_ }
           
-          Write-Host "--- LEVANTANDO SISTEMA ---"
+          Write-Host "\n LEVANTANDO SISTEMA\n"
           docker compose up -d --build --no-cache
           
-          Write-Host "--- LIMPIEZA FINAL ---"
+          Write-Host "\n LIMPIEZA FINAL\n"
           docker system prune -f
