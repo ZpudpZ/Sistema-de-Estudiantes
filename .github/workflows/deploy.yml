@@ -7,22 +7,17 @@ on:
 jobs:
   deploy-local:
     runs-on: self-hosted
-    
+
     steps:
-      - name: Descargar Codigo
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Ejecutar Pruebas CI
+      - name: Ejecutar Pruebas de Integracion
         run: |
-          Write-Host "CONSTRUYENDO ENTORNO DE PRUEBAS"
           docker build -t app-test-image .
-
-          Write-Host "EJECUTANDO SUITE DE TESTS"
           docker run --rm app-test-image pytest tests/
-          
-          Write-Host "PRUEBAS APROBADAS"
 
-      - name: Generar Archivos de Configuracion
+      - name: Configuracion de Secretos y Entorno
         env:
           SEC_DB_NAME: ${{ secrets.DB_NAME }}
           SEC_DB_USER: ${{ secrets.DB_USER }}
@@ -35,7 +30,7 @@ jobs:
 
           New-Item -ItemType Directory -Force -Path $secretsPath | Out-Null
           New-Item -ItemType Directory -Force -Path $initPath | Out-Null
-          
+
           $files = @{
               "db_name.txt"          = $env:SEC_DB_NAME
               "db_user.txt"          = $env:SEC_DB_USER
@@ -47,9 +42,8 @@ jobs:
               $path = Join-Path $secretsPath $name
               if (-not [string]::IsNullOrWhiteSpace($files[$name])) {
                   [System.IO.File]::WriteAllText($path, $files[$name])
-                  Write-Host "Generado: $name"
               } else {
-                  Write-Error "ERROR: El secreto para $name esta vacio."
+                  Write-Error "Error critico: El secreto para $name esta vacio."
                   exit 1
               }
           }
@@ -57,18 +51,20 @@ jobs:
           $sqlContent = "GRANT ALL PRIVILEGES ON $($env:SEC_DB_NAME).* TO '$($env:SEC_DB_USER)'@'%'; FLUSH PRIVILEGES;"
           $sqlPath = Join-Path $initPath "init.sql"
           [System.IO.File]::WriteAllText($sqlPath, $sqlContent)
-          Write-Host "Generado: init.sql"
 
-      - name: Desplegar Docker
+      - name: Despliegue y Orquestacion Docker
         run: |
-          Write-Host "DETENIENDO CONTENEDORES"
-          docker compose down
-          
-          Write-Host "LIMPIANDO PUERTOS"
+          Write-Host "Iniciando parada de servicios y limpieza de huerfanos..."
+          docker compose down --remove-orphans
+
+          Write-Host "Verificando y liberando puerto 3307..."
           docker ps --filter "publish=3307" -q | ForEach-Object { docker rm -f $_ }
-          
-          Write-Host "LEVANTANDO SISTEMA"
+
+          Write-Host "Pausa tecnica para liberacion de puertos TCP (15s)..."
+          Start-Sleep -Seconds 15
+
+          Write-Host "Iniciando construccion y levantamiento de servicios..."
           docker compose up -d --build
-          
-          Write-Host "LIMPIEZA FINAL"
-          docker system prune -f
+
+          Write-Host "Ejecutando mantenimiento de imagenes Docker..."
+          docker image prune -f
