@@ -16,6 +16,16 @@ render_header()
 
 API_URL = "http://web:8000"
 
+def obtener_estado_servidor():
+    inicio = time.time()
+    try:
+        requests.get(f"{API_URL}/estudiantes/", timeout=2)
+        fin = time.time()
+        latencia = round((fin - inicio) * 1000)
+        return True, latencia
+    except:
+        return False, 0
+    
 def validar_datos(codigo, nombres, apellidos):
     if not codigo.isdigit():
         return False, "El Código de Matrícula debe contener solo números."
@@ -35,6 +45,24 @@ def validar_datos(codigo, nombres, apellidos):
         return False, "El Apellido es demasiado corto."
 
     return True, ""
+
+with st.sidebar:
+    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Logo_UNAP.png/482px-Logo_UNAP.png", width=100)
+    st.markdown("### Información de Sesión")
+    st.info("Perfil: Administrador")
+    st.text("Periodo: 2026-I")
+    
+    st.divider()
+    st.markdown("### Estado del Sistema")
+    
+    online, ms = obtener_estado_servidor()
+    
+    if online:
+        st.success("Backend: CONECTADO")
+        st.caption(f"Latencia: {ms}ms")
+    else:
+        st.error("Backend: DESCONECTADO")
+        st.caption("Revise los contenedores Docker")
 
 tab1, tab2, tab3 = st.tabs(["DIRECTORIO", "INSCRIPCIÓN", "GESTIÓN"])
 
@@ -96,10 +124,10 @@ with tab2:
             c1, c2 = st.columns(2)
             with c1:
                 codigo = st.text_input("Código de Matrícula", max_chars=6)
-                nombres = st.text_input("Nombres")
+                nombres = st.text_input("Nombres").upper()
                 semestre = st.number_input("Semestre", 1, 12, 1)
             with c2:
-                apellidos = st.text_input("Apellidos")
+                apellidos = st.text_input("Apellidos").upper()
                 email = st.text_input("Correo Institucional")
 
             st.markdown("<br>", unsafe_allow_html=True)
@@ -153,9 +181,9 @@ with tab3:
             with st.form("edit_form"):
                 ec1, ec2 = st.columns(2)
                 e_cod = ec1.text_input("Código", value=stu['codigo'], disabled=True)
-                e_nom = ec1.text_input("Nombres", value=stu['nombres'])
+                e_nom = ec1.text_input("Nombres", value=stu['nombres']).upper()
                 e_sem = ec1.number_input("Semestre", value=stu['semestre'])
-                e_ape = ec2.text_input("Apellidos", value=stu['apellidos'])
+                e_ape = ec2.text_input("Apellidos", value=stu['apellidos']).upper()
                 e_ema = ec2.text_input("Email", value=stu['email'])
 
                 if st.form_submit_button("Guardar Cambios"):
@@ -178,8 +206,11 @@ with tab3:
 
         st.markdown("---")
         if st.button("ELIMINAR REGISTRO"):
-            requests.delete(f"{API_URL}/estudiantes/{stu['id']}")
-            st.warning("Registro eliminado del sistema.")
-            del st.session_state['student_found']
-            time.sleep(1)
-            st.rerun()
+            try:
+                requests.delete(f"{API_URL}/estudiantes/{stu['id']}")
+                st.success("Registro eliminado del sistema.")
+                del st.session_state['student_found']
+                time.sleep(1)
+                st.rerun()
+            except Exception as e:
+                st.error(f"Error al Eliminar: {e}")
