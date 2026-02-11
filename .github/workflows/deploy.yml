@@ -9,15 +9,15 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Checkout Code
+      - name: Descargar Codigo
         uses: actions/checkout@v4
 
-      - name: Ejecutar Pruebas de Integracion
+      - name: Ejecutar Pruebas
         run: |
           docker build -t app-test-image .
           docker run --rm app-test-image pytest tests/
 
-      - name: Configuracion de Secretos y Entorno
+      - name: Configurar Secretos
         env:
           SEC_DB_NAME: ${{ secrets.DB_NAME }}
           SEC_DB_USER: ${{ secrets.DB_USER }}
@@ -43,7 +43,7 @@ jobs:
               if (-not [string]::IsNullOrWhiteSpace($files[$name])) {
                   [System.IO.File]::WriteAllText($path, $files[$name])
               } else {
-                  Write-Error "Error critico: El secreto para $name esta vacio."
+                  Write-Error "Error: Secreto vacio para $name"
                   exit 1
               }
           }
@@ -52,19 +52,16 @@ jobs:
           $sqlPath = Join-Path $initPath "init.sql"
           [System.IO.File]::WriteAllText($sqlPath, $sqlContent)
 
-      - name: Despliegue y Orquestacion Docker
+      - name: Despliegue Docker
         run: |
-          Write-Host "Iniciando parada de servicios y limpieza de huerfanos..."
           docker compose down --remove-orphans
-
-          Write-Host "Verificando y liberando puerto 3307..."
+          
           docker ps --filter "publish=3307" -q | ForEach-Object { docker rm -f $_ }
-
-          Write-Host "Pausa tecnica para liberacion de puertos TCP (15s)..."
+          docker ps --filter "publish=8000" -q | ForEach-Object { docker rm -f $_ }
+          docker ps --filter "publish=8501" -q | ForEach-Object { docker rm -f $_ }
+          
           Start-Sleep -Seconds 15
-
-          Write-Host "Iniciando construccion y levantamiento de servicios..."
+          
           docker compose up -d --build
-
-          Write-Host "Ejecutando mantenimiento de imagenes Docker..."
+          
           docker image prune -f
