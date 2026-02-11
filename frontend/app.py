@@ -17,7 +17,6 @@ render_header()
 API_URL = "http://web:8000"
 
 def validar_datos(codigo, nombres, apellidos):
-    # CORRECCIÓN: Validamos que sean exactamente 6 dígitos
     if not codigo.isdigit():
         return False, "El Código de Matrícula debe contener solo números."
     if len(codigo) != 6:
@@ -26,12 +25,12 @@ def validar_datos(codigo, nombres, apellidos):
     patron_texto = r"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
     
     if not re.match(patron_texto, nombres):
-        return False, "El Nombre contiene caracteres inválidos (números o símbolos)."
+        return False, "El Nombre contiene caracteres inválidos."
     if len(nombres.strip()) < 2:
         return False, "El Nombre es demasiado corto."
         
     if not re.match(patron_texto, apellidos):
-        return False, "El Apellido contiene caracteres inválidos (números o símbolos)."
+        return False, "El Apellido contiene caracteres inválidos."
     if len(apellidos.strip()) < 2:
         return False, "El Apellido es demasiado corto."
 
@@ -40,21 +39,40 @@ def validar_datos(codigo, nombres, apellidos):
 tab1, tab2, tab3 = st.tabs(["DIRECTORIO", "INSCRIPCIÓN", "GESTIÓN"])
 
 with tab1:
-    section_title("Listado General de Estudiantes", "https://cdn-icons-png.flaticon.com/512/3135/3135715.png")
+    section_title("Panel de Control Académico", "https://cdn-icons-png.flaticon.com/512/3135/3135715.png")
 
-    if st.button("Actualizar Tabla"):
-        st.rerun()
-    
     try:
         response = requests.get(f"{API_URL}/estudiantes/")
         if response.status_code == 200:
             data = response.json()
             if data:
                 df = pd.DataFrame(data)
-                df_view = df[["id", "codigo", "nombres", "apellidos", "email", "semestre", "activo"]]
+                total = len(df)
+                activos = len(df[df['activo'] == True])
+                semestre_avg = int(df['semestre'].mean()) if not df.empty else 0
                 
+                k1, k2, k3 = st.columns(3)
+                k1.metric("Total Matriculados", total)
+                k2.metric("Estudiantes Activos", activos)
+                k3.metric("Semestre Promedio", f"{semestre_avg}°")
+                st.divider()
+
+                df_view = df[["id", "codigo", "nombres", "apellidos", "email", "semestre", "activo"]]
                 df_view.columns = ["ID", "Matrícula", "Nombres", "Apellidos", "Email", "Semestre", "Activo"]
                 
+                col_btn, col_refresh = st.columns([2, 8])
+                with col_btn:
+                    csv = df_view.to_csv(index=False).encode("utf-8")
+                    st.download_button(
+                        label="Descargar Excel/CSV",
+                        data=csv,
+                        file_name="reporte_alumnos.csv",
+                        mime="text/csv"
+                    )
+                with col_refresh:
+                    if st.button("Actualizar Tabla"):
+                        st.rerun()
+
                 st.dataframe(
                     df_view, 
                     use_container_width=True, 
@@ -77,7 +95,6 @@ with tab2:
         with st.form("add_form", clear_on_submit=True):
             c1, c2 = st.columns(2)
             with c1:
-                # CORRECCIÓN: max_chars=6
                 codigo = st.text_input("Código de Matrícula", max_chars=6)
                 nombres = st.text_input("Nombres")
                 semestre = st.number_input("Semestre", 1, 12, 1)
@@ -109,14 +126,12 @@ with tab3:
     
     col_search, _ = st.columns([2, 4])
     with col_search:
-        # CORRECCIÓN: max_chars=6
         search_code = st.text_input("Buscar por Código de Matrícula", max_chars=6)
         if st.button("Consultar Base de Datos"):
             if not search_code:
                 st.warning("Ingrese un código para buscar.")
             else:
                 try:
-                    # OJO: Si el backend no tiene este endpoint, dará 404 y saldrá el warning de abajo
                     r = requests.get(f"{API_URL}/estudiantes/buscar/{search_code}")
                     if r.status_code == 200:
                         st.session_state['student_found'] = r.json()
@@ -137,8 +152,7 @@ with tab3:
         with st.expander("Editar Información Académica", expanded=True):
             with st.form("edit_form"):
                 ec1, ec2 = st.columns(2)
-                # CORRECCIÓN: max_chars=6
-                e_cod = ec1.text_input("Código", value=stu['codigo'], max_chars=6)
+                e_cod = ec1.text_input("Código", value=stu['codigo'], disabled=True)
                 e_nom = ec1.text_input("Nombres", value=stu['nombres'])
                 e_sem = ec1.number_input("Semestre", value=stu['semestre'])
                 e_ape = ec2.text_input("Apellidos", value=stu['apellidos'])
@@ -152,15 +166,11 @@ with tab3:
                         try:
                             requests.put(f"{API_URL}/estudiantes/{stu['id']}", json=pay)
                             
-                            st.session_state['student_found']['codigo'] = e_cod
-                            st.session_state['student_found']['nombres'] = e_nom
-                            st.session_state['student_found']['apellidos'] = e_ape
-                            st.session_state['student_found']['email'] = e_ema
-                            st.session_state['student_found']['semestre'] = e_sem
-                            
+                            st.session_state['student_found'].update(pay)
                             st.success("Datos actualizados correctamente.")
                             time.sleep(1)
                             st.rerun()
+
                         except Exception as e:
                             st.error(f"Error: {e}")
                     else:
