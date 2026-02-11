@@ -16,16 +16,6 @@ render_header()
 
 API_URL = "http://web:8000"
 
-def obtener_estado_servidor():
-    inicio = time.time()
-    try:
-        requests.get(f"{API_URL}/estudiantes/", timeout=2)
-        fin = time.time()
-        latencia = round((fin - inicio) * 1000)
-        return True, latencia
-    except:
-        return False, 0
-    
 def validar_datos(codigo, nombres, apellidos):
     if not codigo.isdigit():
         return False, "El Código de Matrícula debe contener solo números."
@@ -48,21 +38,11 @@ def validar_datos(codigo, nombres, apellidos):
 
 with st.sidebar:
     st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Logo_UNAP.png/482px-Logo_UNAP.png", width=100)
-    st.markdown("### Información de Sesión")
-    st.info("Perfil: Administrador")
+    st.markdown("### Sistema Académico")
+    st.info("Usuario: **Administrador**")
     st.text("Periodo: 2026-I")
-    
     st.divider()
-    st.markdown("### Estado del Sistema")
-    
-    online, ms = obtener_estado_servidor()
-    
-    if online:
-        st.success("Backend: CONECTADO")
-        st.caption(f"Latencia: {ms}ms")
-    else:
-        st.error("Backend: DESCONECTADO")
-        st.caption("Revise los contenedores Docker")
+    st.caption("© 2026 Oficina de Tecnologías de Información")
 
 tab1, tab2, tab3 = st.tabs(["DIRECTORIO", "INSCRIPCIÓN", "GESTIÓN"])
 
@@ -75,6 +55,7 @@ with tab1:
             data = response.json()
             if data:
                 df = pd.DataFrame(data)
+                
                 total = len(df)
                 activos = len(df[df['activo'] == True])
                 semestre_avg = int(df['semestre'].mean()) if not df.empty else 0
@@ -83,6 +64,7 @@ with tab1:
                 k1.metric("Total Matriculados", total)
                 k2.metric("Estudiantes Activos", activos)
                 k3.metric("Semestre Promedio", f"{semestre_avg}°")
+                
                 st.divider()
 
                 df_view = df[["id", "codigo", "nombres", "apellidos", "email", "semestre", "activo"]]
@@ -92,7 +74,7 @@ with tab1:
                 with col_btn:
                     csv = df_view.to_csv(index=False).encode("utf-8")
                     st.download_button(
-                        label="Descargar Excel/CSV",
+                        label="Descargar Reporte CSV",
                         data=csv,
                         file_name="reporte_alumnos.csv",
                         mime="text/csv"
@@ -163,6 +145,7 @@ with tab3:
                     r = requests.get(f"{API_URL}/estudiantes/buscar/{search_code}")
                     if r.status_code == 200:
                         st.session_state['student_found'] = r.json()
+                        st.rerun()
                     elif r.status_code == 404:
                         st.warning("No se encontró ningún estudiante con ese código.")
                         if 'student_found' in st.session_state:
