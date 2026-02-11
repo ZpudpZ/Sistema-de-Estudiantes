@@ -37,7 +37,7 @@ def validar_datos(codigo, nombres, apellidos):
     return True, ""
 
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Logo_UNAP.png/482px-Logo_UNAP.png", width=100)
+    st.image("https://oti.unap.edu.pe/recursos/oti-ofic.png", width=150)
     st.markdown("### Sistema Académico")
     st.info("Usuario: **Administrador**")
     st.text("Periodo: 2026-I")
@@ -72,7 +72,7 @@ with tab1:
                 
                 col_btn, col_refresh = st.columns([2, 8])
                 with col_btn:
-                    csv = df_view.to_csv(index=False).encode("utf-8")
+                    csv = df_view.to_csv(index=False).encode("utf-8-sig")
                     st.download_button(
                         label="Descargar Reporte CSV",
                         data=csv,
@@ -113,7 +113,7 @@ with tab2:
                 email = st.text_input("Correo Institucional")
 
             st.markdown("<br>", unsafe_allow_html=True)
-            if st.form_submit_button("Registrar Postulante"):
+            if st.form_submit_button("Registrar Estudiante"):
                 es_valido, mensaje_error = validar_datos(codigo, nombres, apellidos)
 
                 if es_valido:
