@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from . import models, schemas
+import models, schemas
 
 def get_student(db: Session, student_id: int):
     return db.query(models.Student).filter(models.Student.id == student_id).first()
@@ -16,7 +16,8 @@ def create_student(db: Session, student: schemas.StudentCreate):
         nombres=student.nombres,
         apellidos=student.apellidos,
         email=student.email,
-        semestre=student.semestre
+        semestre=student.semestre,
+        activo=student.activo
     )
     db.add(db_student)
     db.commit()
@@ -25,14 +26,16 @@ def create_student(db: Session, student: schemas.StudentCreate):
 
 def update_student(db: Session, student_id: int, student_data: schemas.StudentCreate):
     db_student = db.query(models.Student).filter(models.Student.id == student_id).first()
+    
     if db_student:
-        db_student.codigo = student_data.codigo
         db_student.nombres = student_data.nombres
         db_student.apellidos = student_data.apellidos
         db_student.email = student_data.email
         db_student.semestre = student_data.semestre
+        
         db.commit()
         db.refresh(db_student)
+    
     return db_student
 
 def delete_student(db: Session, student_id: int):
