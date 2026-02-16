@@ -37,7 +37,7 @@ def validar_datos_academicos(codigo, nombres, apellidos):
     return True, ""
 
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Logo_UNAP.png/240px-Logo_UNAP.png", width=120)
+    st.image("https://oti.unap.edu.pe/recursos/oti-ofic.png", width=150)
     st.markdown("### Oficina de Registros")
     st.info("Rol: **Administrador**")
     st.text("Periodo Lectivo: 2026-I")
