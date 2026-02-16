@@ -6,7 +6,7 @@ import re
 from components.header import load_css, render_header, section_title
 
 st.set_page_config(
-    page_title="SIGA | UNAP",
+    page_title="Sistema de Matrícula | UNAP",
     layout="wide",
     page_icon="https://aulavirtual2.unap.edu.pe/images/themes/unap/favicon.ico"
 )
@@ -16,38 +16,40 @@ render_header()
 
 API_URL = "http://web:8000"
 
-def validar_datos(codigo, nombres, apellidos):
+def validar_datos_academicos(codigo, nombres, apellidos):
     if not codigo.isdigit():
-        return False, "El Código de Matrícula debe contener solo números."
+        return False, "Error de Formato: El Código Universitario debe ser numérico."
     if len(codigo) != 6:
-        return False, f"El Código debe tener exactamente 6 dígitos (actual: {len(codigo)})."
+        return False, f"Error de Longitud: El Código debe constar de 6 dígitos exactos (Ingresado: {len(codigo)})."
 
     patron_texto = r"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
     
     if not re.match(patron_texto, nombres):
-        return False, "El Nombre contiene caracteres inválidos."
+        return False, "Carácter Inválido: El campo Nombres contiene símbolos no permitidos."
     if len(nombres.strip()) < 2:
-        return False, "El Nombre es demasiado corto."
+        return False, "Longitud Insuficiente: El nombre es demasiado corto para ser válido."
         
     if not re.match(patron_texto, apellidos):
-        return False, "El Apellido contiene caracteres inválidos."
+        return False, "Carácter Inválido: El campo Apellidos contiene símbolos no permitidos."
     if len(apellidos.strip()) < 2:
-        return False, "El Apellido es demasiado corto."
+        return False, "Longitud Insuficiente: El apellido es demasiado corto para ser válido."
 
     return True, ""
 
 with st.sidebar:
-    st.image("https://oti.unap.edu.pe/recursos/oti-ofic.png", width=150)
-    st.markdown("### Sistema Académico")
-    st.info("Usuario: **Administrador**")
-    st.text("Periodo: 2026-I")
+    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Logo_UNAP.png/240px-Logo_UNAP.png", width=120)
+    st.markdown("### Oficina de Registros")
+    st.info("Rol: **Administrador**")
+    st.text("Periodo Lectivo: 2026-I")
     st.divider()
-    st.caption("© 2026 Oficina de Tecnologías de Información")
+    st.caption("Sistema Integrado de Gestión Académica")
+    st.caption("© 2026 UNAP - OTI")
 
-tab1, tab2, tab3 = st.tabs(["DIRECTORIO", "INSCRIPCIÓN", "GESTIÓN"])
+tab_padron, tab_matricula, tab_admin = st.tabs(["PADRÓN DE MATRICULADOS", "NUEVA MATRÍCULA", "ADMINISTRACIÓN ACADÉMICA"])
 
-with tab1:
-    section_title("Panel de Control Académico", "https://cdn-icons-png.flaticon.com/512/3135/3135715.png")
+# REPORTE DE MATRICULADOS
+with tab_padron:
+    section_title("Reporte General de Estudiantes Matriculados", "https://cdn-icons-png.flaticon.com/512/3135/3135715.png")
 
     try:
         response = requests.get(f"{API_URL}/estudiantes/")
@@ -56,31 +58,31 @@ with tab1:
             if data:
                 df = pd.DataFrame(data)
                 
-                total = len(df)
-                activos = len(df[df['activo'] == True])
-                semestre_avg = int(df['semestre'].mean()) if not df.empty else 0
+                total_matriculados = len(df)
+                estudiantes_regulares = len(df[df['activo'] == True]) if 'activo' in df.columns else total_matriculados
+                ciclo_promedio = int(df['semestre'].mean()) if not df.empty else 0
                 
                 k1, k2, k3 = st.columns(3)
-                k1.metric("Total Matriculados", total)
-                k2.metric("Estudiantes Activos", activos)
-                k3.metric("Semestre Promedio", f"{semestre_avg}°")
+                k1.metric("Total Matriculados", total_matriculados)
+                k2.metric("Estudiantes Regulares", estudiantes_regulares)
+                k3.metric("Ciclo Académico Promedio", f"{ciclo_promedio}°")
                 
                 st.divider()
 
-                df_view = df[["id", "codigo", "nombres", "apellidos", "email", "semestre", "activo"]]
-                df_view.columns = ["ID", "Matrícula", "Nombres", "Apellidos", "Email", "Semestre", "Activo"]
+                df_view = df[["id", "codigo", "nombres", "apellidos", "email", "semestre"]]
+                df_view.columns = ["ID Sistema", "Código Universitario", "Nombres", "Apellidos", "Correo Institucional", "Ciclo"]
                 
                 col_btn, col_refresh = st.columns([2, 8])
                 with col_btn:
                     csv = df_view.to_csv(index=False).encode("utf-8-sig")
                     st.download_button(
-                        label="Descargar Reporte CSV",
+                        label="Exportar Padrón (CSV)",
                         data=csv,
-                        file_name="reporte_alumnos.csv",
+                        file_name="padron_matriculados_2026_1.csv",
                         mime="text/csv"
                     )
                 with col_refresh:
-                    if st.button("Actualizar Tabla"):
+                    if st.button("Actualizar Padrón"):
                         st.rerun()
 
                 st.dataframe(
@@ -88,58 +90,74 @@ with tab1:
                     use_container_width=True, 
                     hide_index=True,
                     column_config={
-                        "Semestre": st.column_config.NumberColumn(format="%d°"),
+                        "Ciclo": st.column_config.NumberColumn(format="%d°"),
+                        "ID Sistema": st.column_config.NumberColumn(format="%d"),
                     }
                 )
             else:
-                st.info("La base de datos se encuentra vacía.")
+                st.info("El sistema no presenta registros de matrícula para el periodo actual.")
         else:
-            st.error(f"Error de Servidor: {response.status_code}")
+            st.error(f"Error de comunicación con el servidor central. Código de estado: {response.status_code}")
     except Exception as e:
-        st.error(f"Error de conexión con API: {e}")
+        st.error(f"Fallo de conexión con el servicio de base de datos: {e}")
 
-with tab2:
-    section_title("Ficha de Inscripción", "https://cdn-icons-png.flaticon.com/512/2921/2921222.png")
+# PROCESO DE MATRÍCULA
+with tab_matricula:
+    section_title("Proceso de Matrícula - Periodo 2026-I", "https://cdn-icons-png.flaticon.com/512/2921/2921222.png")
     
     with st.container(border=True):
-        with st.form("add_form", clear_on_submit=True):
+        st.markdown("#### Datos del Postulante")
+        with st.form("form_matricula", clear_on_submit=True):
             c1, c2 = st.columns(2)
             with c1:
-                codigo = st.text_input("Código de Matrícula", max_chars=6)
-                nombres = st.text_input("Nombres").upper()
-                semestre = st.number_input("Semestre", 1, 12, 1)
+                codigo = st.text_input("Código Universitario", max_chars=6, help="Ingrese el código de 6 dígitos asignado.")
+                nombres = st.text_input("Nombres Completos").upper()
+                semestre = st.number_input("Ciclo Académico a Matricular", 1, 12, 1)
             with c2:
-                apellidos = st.text_input("Apellidos").upper()
-                email = st.text_input("Correo Institucional")
+                apellidos = st.text_input("Apellidos Completos").upper()
+                email = st.text_input("Correo Institucional Asignado")
 
             st.markdown("<br>", unsafe_allow_html=True)
-            if st.form_submit_button("Registrar Estudiante"):
-                es_valido, mensaje_error = validar_datos(codigo, nombres, apellidos)
+            col_izq, col_der = st.columns([1, 4])
+            with col_izq:
+                submit_btn = st.form_submit_button("Procesar Matrícula", type="primary")
+            
+            if submit_btn:
+                es_valido, mensaje_error = validar_datos_academicos(codigo, nombres, apellidos)
 
                 if es_valido:
-                    payload = {"codigo": codigo, "nombres": nombres, "apellidos": apellidos, "email": email, "semestre": semestre}
+                    payload = {
+                        "codigo": codigo, 
+                        "nombres": nombres, 
+                        "apellidos": apellidos, 
+                        "email": email, 
+                        "semestre": semestre
+                    }
                     try:
-                        res = requests.post(f"{API_URL}/estudiantes/", json=payload)
+                        with st.spinner("Validando requisitos y registrando en base de datos..."):
+                            res = requests.post(f"{API_URL}/estudiantes/", json=payload)
+                        
                         if res.status_code == 200:
-                            st.success("Transacción Exitosa: Estudiante registrado.")
-                            time.sleep(1)
+                            st.success(f"MATRÍCULA EXITOSA: El estudiante {apellidos}, {nombres} ha sido inscrito en el ciclo {semestre}.")
+                            time.sleep(1.5)
                             st.rerun()
                         else:
-                            st.error(f"Error: {res.text}")
+                            st.error(f"Error en el proceso de matrícula: {res.text}")
                     except Exception as e:
-                        st.error(f"Error de Red: {e}")
+                        st.error(f"Error crítico de red: {e}")
                 else:
-                    st.warning(f"Validación: {mensaje_error}")
+                    st.warning(f"Validación Fallida: {mensaje_error}")
 
-with tab3:
-    section_title("Gestión y Mantenimiento", "https://cdn-icons-png.flaticon.com/512/3953/3953226.png")
+# ADMINISTRACIÓN
+with tab_admin:
+    section_title("Administración de Registros Académicos", "https://cdn-icons-png.flaticon.com/512/3953/3953226.png")
     
     col_search, _ = st.columns([2, 4])
     with col_search:
-        search_code = st.text_input("Buscar por Código de Matrícula", max_chars=6)
-        if st.button("Consultar Base de Datos"):
+        search_code = st.text_input("Buscar Estudiante por Código", max_chars=6)
+        if st.button("Consultar Expediente"):
             if not search_code:
-                st.warning("Ingrese un código para buscar.")
+                st.warning("Ingrese un Código Universitario válido para iniciar la búsqueda.")
             else:
                 try:
                     r = requests.get(f"{API_URL}/estudiantes/buscar/{search_code}")
@@ -147,53 +165,51 @@ with tab3:
                         st.session_state['student_found'] = r.json()
                         st.rerun()
                     elif r.status_code == 404:
-                        st.warning("No se encontró ningún estudiante con ese código.")
+                        st.warning("No se encuentra el expediente académico solicitado.")
                         if 'student_found' in st.session_state:
                             del st.session_state['student_found']
                     else:
-                        st.error(f"Error del servidor: {r.status_code}")
+                        st.error(f"Error interno del servidor: {r.status_code}")
                 except Exception as e:
-                    st.error(f"Error: {e}")
+                    st.error(f"Error de conectividad: {e}")
 
     if 'student_found' in st.session_state:
         stu = st.session_state['student_found']
         st.divider()
-        st.success(f"Estudiante seleccionado: {stu['apellidos']}, {stu['nombres']}")
+        st.info(f"Expediente Académico: **{stu['apellidos']}, {stu['nombres']}**")
 
-        with st.expander("Editar Información Académica", expanded=True):
+        with st.expander("Modificación de Datos Académicos", expanded=True):
             with st.form("edit_form"):
                 ec1, ec2 = st.columns(2)
-                e_cod = ec1.text_input("Código", value=stu['codigo'], disabled=True)
+                e_cod = ec1.text_input("Código Universitario (Inmutable)", value=stu['codigo'], disabled=True)
                 e_nom = ec1.text_input("Nombres", value=stu['nombres']).upper()
-                e_sem = ec1.number_input("Semestre", value=stu['semestre'])
+                e_sem = ec1.number_input("Ciclo Académico", value=stu['semestre'])
                 e_ape = ec2.text_input("Apellidos", value=stu['apellidos']).upper()
-                e_ema = ec2.text_input("Email", value=stu['email'])
+                e_ema = ec2.text_input("Correo Institucional", value=stu['email'])
 
-                if st.form_submit_button("Guardar Cambios"):
-                    es_valido, mensaje_error = validar_datos(e_cod, e_nom, e_ape)
-
-                    if es_valido:
+                if st.form_submit_button("Guardar Cambios en Expediente"):
+                    if len(e_nom) < 2 or len(e_ape) < 2:
+                        st.warning("Error: Los datos personales no cumplen con la longitud mínima requerida.")
+                    else:
                         pay = {"codigo": e_cod, "nombres": e_nom, "apellidos": e_ape, "email": e_ema, "semestre": e_sem}
                         try:
                             requests.put(f"{API_URL}/estudiantes/{stu['id']}", json=pay)
-                            
                             st.session_state['student_found'].update(pay)
-                            st.success("Datos actualizados correctamente.")
-                            time.sleep(1)
+                            st.success("La actualización del expediente se completó correctamente.")
+                            time.sleep(1.5)
                             st.rerun()
-
                         except Exception as e:
-                            st.error(f"Error: {e}")
-                    else:
-                        st.warning(f"No se pudo guardar: {mensaje_error}")
+                            st.error(f"Error al intentar guardar: {e}")
 
         st.markdown("---")
-        if st.button("ELIMINAR REGISTRO"):
-            try:
-                requests.delete(f"{API_URL}/estudiantes/{stu['id']}")
-                st.success("Registro eliminado del sistema.")
-                del st.session_state['student_found']
-                time.sleep(1)
-                st.rerun()
-            except Exception as e:
-                st.error(f"Error al Eliminar: {e}")
+        col_del_1, col_del_2 = st.columns([1, 4])
+        with col_del_1:
+            if st.button("ANULAR MATRÍCULA"):
+                try:
+                    requests.delete(f"{API_URL}/estudiantes/{stu['id']}")
+                    st.success("La matrícula ha sido anulada y el registro eliminado del sistema.")
+                    del st.session_state['student_found']
+                    time.sleep(1.5)
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Error al anular matrícula: {e}")

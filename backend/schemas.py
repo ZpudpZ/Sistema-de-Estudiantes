@@ -1,24 +1,21 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
-# Datos básicos
 class StudentBase(BaseModel):
     codigo: str
     nombres: str
     apellidos: str
-    email: EmailStr
+    email: str
     semestre: int
+    activo: bool = True
 
-# Datos para crear
 class StudentCreate(StudentBase):
     pass
 
-# Datos de respuesta
 class StudentResponse(StudentBase):
     id: int
-    activo: bool
-    created_at: datetime
+    created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
     class Config:
