@@ -1,4 +1,4 @@
-﻿name: CI/CD
+﻿name: CI/CD Pipeline
 
 on:
   push:
@@ -15,7 +15,8 @@ jobs:
       - name: Ejecutar Pruebas en Docker
         run: |
           docker compose build web
-          docker compose run --rm --entrypoint "sh -c" web "pip install pytest httpx coverage && pytest tests/ -v"
+          
+          docker compose run --rm --entrypoint "sh -c" web "pip install pytest httpx coverage && export PYTHONPATH=/app && pytest tests/ -v"
 
       - name: Configurar Secretos
         env:
