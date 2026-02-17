@@ -47,6 +47,13 @@ def leer_estudiante_por_codigo(codigo: str, db: Session = Depends(database.get_d
         raise HTTPException(status_code=404, detail="Estudiante no encontrado")
     return db_student
 
+@app.get("/estudiantes/{student_id}", response_model=schemas.StudentResponse)
+def leer_estudiante_por_id(student_id: int, db: Session = Depends(database.get_db)):
+    db_student = crud.get_student(db, student_id=student_id)
+    if db_student is None:
+        raise HTTPException(status_code=404, detail="Estudiante no encontrado")
+    return db_student
+
 @app.put("/estudiantes/{student_id}", response_model=schemas.StudentResponse)
 def actualizar_estudiante(student_id: int, student: schemas.StudentCreate, db: Session = Depends(database.get_db)):
     db_student = crud.get_student(db, student_id)
