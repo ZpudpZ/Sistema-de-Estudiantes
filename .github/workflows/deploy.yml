@@ -1,4 +1,4 @@
-﻿name: CI/CD Pipeline
+﻿name: CI/CD
 
 on:
   push:
@@ -15,10 +15,9 @@ jobs:
       - name: Ejecutar Pruebas en Docker
         run: |
           docker compose build web
-          
           docker compose run --rm --entrypoint "sh -c" web "pip install pytest httpx coverage && export PYTHONPATH=/app && pytest tests/ -v"
 
-      - name: Configurar Secretos
+      - name: Configurar Secretos (Blindado)
         env:
           SEC_DB_NAME: ${{ secrets.DB_NAME }}
           SEC_DB_USER: ${{ secrets.DB_USER }}
@@ -41,6 +40,12 @@ jobs:
 
           foreach ($name in $files.Keys) {
               $path = Join-Path $secretsPath $name
+              
+              if (Test-Path $path) {
+                  Set-ItemProperty -Path $path -Name IsReadOnly -Value $false -ErrorAction SilentlyContinue
+                  Remove-Item -Path $path -Force
+              }
+
               if (-not [string]::IsNullOrWhiteSpace($files[$name])) {
                   [System.IO.File]::WriteAllText($path, $files[$name])
               } else {
