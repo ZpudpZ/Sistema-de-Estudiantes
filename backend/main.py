@@ -61,3 +61,9 @@ def eliminar_estudiante(student_id: int, db: Session = Depends(database.get_db))
         raise HTTPException(status_code=404, detail="Estudiante no encontrado")
     crud.delete_student(db=db, student_id=student_id)
     return {"mensaje": "Estudiante eliminado correctamente"}
+
+import os
+@app.get('/simular-crash')
+def crash_server():
+    print('ADIÓS MUNDO CRUEL! ')
+    os._exit(1)

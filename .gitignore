@@ -1,4 +1,4 @@
-# Python & entorno virtual
+# Python & entorno virtual  
 __pycache__/
 *.py[cod]
 venv/
