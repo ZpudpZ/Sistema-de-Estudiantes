@@ -1,4 +1,4 @@
-# (DESACTUALIZADO)
+# (DESACTUALIZADO) R
 # SIGA - Sistema Integrado de Gestión Académica
 
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
