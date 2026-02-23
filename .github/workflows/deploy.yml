@@ -12,10 +12,9 @@ jobs:
       - name: Descargar Código
         uses: actions/checkout@v4
 
-      - name: Ejecutar Pruebas en Docker
-        run: |
-          docker compose build web
-          docker compose run --rm --entrypoint "sh -c" web "pip install pytest httpx coverage && export PYTHONPATH=/app && pytest tests/ -v"
+      - name: Limpieza Previa (Matar zombies)
+        run: docker compose down -v --remove-orphans
+        continue-on-error: true
 
       - name: Configurar Secretos (Blindado)
         env:
@@ -27,6 +26,10 @@ jobs:
           $root = Get-Location
           $secretsPath = Join-Path $root "secrets"
           $initPath = Join-Path $root "mysql-init"
+
+          if (Test-Path $secretsPath) {
+              Remove-Item -Path $secretsPath -Recurse -Force
+          }
 
           New-Item -ItemType Directory -Force -Path $secretsPath | Out-Null
           New-Item -ItemType Directory -Force -Path $initPath | Out-Null
@@ -41,11 +44,6 @@ jobs:
           foreach ($name in $files.Keys) {
               $path = Join-Path $secretsPath $name
               
-              if (Test-Path $path) {
-                  Set-ItemProperty -Path $path -Name IsReadOnly -Value $false -ErrorAction SilentlyContinue
-                  Remove-Item -Path $path -Force
-              }
-
               if (-not [string]::IsNullOrWhiteSpace($files[$name])) {
                   [System.IO.File]::WriteAllText($path, $files[$name])
               } else {
@@ -58,8 +56,13 @@ jobs:
           $sqlPath = Join-Path $initPath "init.sql"
           [System.IO.File]::WriteAllText($sqlPath, $sqlContent)
 
-      - name: Despliegue Final
-        if: success()
+      - name: Ejecutar Pruebas en Docker
+        run: |
+          docker compose build web
+          docker compose run --rm --entrypoint "sh -c" web "pip install pytest httpx coverage && export PYTHONPATH=/app && pytest tests/ -v"
+
+      - name: Despliegue Final o Apagado
+        if: always()
         run: |
           docker compose down --remove-orphans
           
