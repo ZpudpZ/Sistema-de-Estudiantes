@@ -12,11 +12,11 @@ jobs:
       - name: Descargar Código
         uses: actions/checkout@v4
 
-      - name: Limpieza Previa (Matar zombies)
+      - name: Limpieza Previa
         run: docker compose down -v --remove-orphans
         continue-on-error: true
 
-      - name: Configurar Secretos (Blindado)
+      - name: Configurar Secretos
         env:
           SEC_DB_NAME: ${{ secrets.DB_NAME }}
           SEC_DB_USER: ${{ secrets.DB_USER }}

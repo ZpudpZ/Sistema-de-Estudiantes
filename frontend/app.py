@@ -6,7 +6,7 @@ import re
 from components.header import load_css, render_header, section_title
 
 st.set_page_config(
-    page_title="Sistema de Matrícula | UNAP",
+    page_title="CI/CD Test - CRUD() | UNAP",
     layout="wide",
     page_icon="https://aulavirtual2.unap.edu.pe/images/themes/unap/favicon.ico"
 )
@@ -42,7 +42,7 @@ with st.sidebar:
     st.info("Rol: **Administrador**")
     st.text("Periodo Lectivo: 2026-I")
     st.divider()
-    st.caption("Sistema Integrado de Gestión Académica")
+    st.caption("Sistema Test -Crud")
     st.caption("© 2026 UNAP - OTI")
 
 tab_padron, tab_matricula, tab_admin = st.tabs(["PADRÓN DE MATRICULADOS", "NUEVA MATRÍCULA", "ADMINISTRACIÓN ACADÉMICA"])
