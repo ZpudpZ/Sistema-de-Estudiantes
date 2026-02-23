@@ -12,11 +12,6 @@ jobs:
       - name: Descargar Código
         uses: actions/checkout@v4
 
-      - name: Ejecutar Pruebas en Docker
-        run: |
-          docker compose build web
-          docker compose run --rm --entrypoint "sh -c" web "pip install pytest httpx coverage && export PYTHONPATH=/app && pytest tests/ -v"
-
       - name: Configurar Secretos (Blindado)
         env:
           SEC_DB_NAME: ${{ secrets.DB_NAME }}
@@ -57,6 +52,11 @@ jobs:
           $sqlContent = "GRANT ALL PRIVILEGES ON $($env:SEC_DB_NAME).* TO '$($env:SEC_DB_USER)'@'%'; FLUSH PRIVILEGES;"
           $sqlPath = Join-Path $initPath "init.sql"
           [System.IO.File]::WriteAllText($sqlPath, $sqlContent)
+
+      - name: Ejecutar Pruebas en Docker
+        run: |
+          docker compose build web
+          docker compose run --rm --entrypoint "sh -c" web "pip install pytest httpx coverage && export PYTHONPATH=/app && pytest tests/ -v"
 
       - name: Despliegue Final
         if: success()

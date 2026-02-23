@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   web:
     build: ./backend
@@ -46,7 +44,6 @@ services:
       - db_password
       - db_user
       - db_root_password
-    
     deploy:
       resources:
         limits:
