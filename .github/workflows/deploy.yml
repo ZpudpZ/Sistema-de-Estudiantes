@@ -23,6 +23,10 @@ jobs:
           $secretsPath = Join-Path $root "secrets"
           $initPath = Join-Path $root "mysql-init"
 
+          if (Test-Path $secretsPath) {
+              Remove-Item -Path $secretsPath -Recurse -Force
+          }
+
           New-Item -ItemType Directory -Force -Path $secretsPath | Out-Null
           New-Item -ItemType Directory -Force -Path $initPath | Out-Null
 
@@ -36,11 +40,6 @@ jobs:
           foreach ($name in $files.Keys) {
               $path = Join-Path $secretsPath $name
               
-              if (Test-Path $path) {
-                  Set-ItemProperty -Path $path -Name IsReadOnly -Value $false -ErrorAction SilentlyContinue
-                  Remove-Item -Path $path -Force
-              }
-
               if (-not [string]::IsNullOrWhiteSpace($files[$name])) {
                   [System.IO.File]::WriteAllText($path, $files[$name])
               } else {
