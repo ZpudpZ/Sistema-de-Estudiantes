@@ -12,6 +12,10 @@ jobs:
       - name: Descargar Código
         uses: actions/checkout@v4
 
+      - name: Limpieza Previa (Matar zombies)
+        run: docker compose down -v --remove-orphans
+        continue-on-error: true
+
       - name: Configurar Secretos (Blindado)
         env:
           SEC_DB_NAME: ${{ secrets.DB_NAME }}
@@ -57,8 +61,8 @@ jobs:
           docker compose build web
           docker compose run --rm --entrypoint "sh -c" web "pip install pytest httpx coverage && export PYTHONPATH=/app && pytest tests/ -v"
 
-      - name: Despliegue Final
-        if: success()
+      - name: Despliegue Final o Apagado
+        if: always()
         run: |
           docker compose down --remove-orphans
           
