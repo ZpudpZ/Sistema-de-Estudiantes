@@ -42,7 +42,7 @@ def setup_database():
 def test_lectura_raiz():
     response = client.get("/")
     assert response.status_code == 200
-    assert "mensaje" in response.json()
+    assert "status" in response.json()
 
 def test_crear_estudiante_exitoso():
     payload = {
@@ -53,13 +53,12 @@ def test_crear_estudiante_exitoso():
         "semestre": 9
     }
     response = client.post("/estudiantes/", json=payload)
-    assert response.status_code == 200
+    assert response.status_code == 201
     data = response.json()
     assert data["codigo"] == "202601"
     assert "id" in data
 
 def test_crear_estudiante_error_validacion():
-    # Falta el campo semestre y email
     response = client.post("/estudiantes/", json={
         "codigo": "123",
         "nombres": "TEST"
@@ -71,10 +70,7 @@ def test_crear_estudiante_duplicado():
         "codigo": "202699",
         "nombres": "ANA", "apellidos": "GARCIA", "email": "ana@test.com", "semestre": 1
     }
-    # Primer registro
     client.post("/estudiantes/", json=payload)
-    
-    # Segundo registro (Duplicado)
     response = client.post("/estudiantes/", json=payload)
     assert response.status_code == 400
 
@@ -87,23 +83,19 @@ def test_lectura_lista_estudiantes():
     assert len(response.json()) > 0
 
 def test_flujo_actualizacion_eliminacion():
-    # Crear
     res_create = client.post("/estudiantes/", json={
         "codigo": "TEMP01", "nombres": "ORIGINAL", "apellidos": "X", "email": "temp@t.com", "semestre": 1
     })
     student_id = res_create.json()["id"]
 
-    # Actualizar
     res_update = client.put(f"/estudiantes/{student_id}", json={
         "codigo": "TEMP01", "nombres": "EDITADO", "apellidos": "X", "email": "temp@t.com", "semestre": 2
     })
     assert res_update.status_code == 200
     assert res_update.json()["nombres"] == "EDITADO"
 
-    # Eliminar
     res_del = client.delete(f"/estudiantes/{student_id}")
     assert res_del.status_code == 200
 
-    # Verificar que ya no existe
     res_get = client.get(f"/estudiantes/{student_id}")
     assert res_get.status_code == 404
