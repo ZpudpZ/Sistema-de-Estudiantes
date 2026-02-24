@@ -45,7 +45,7 @@ services:
       - mysql_data:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d
     ports:
-      - "3310:3306"
+      - "3315:3306"
     secrets:
       - source: db_password
         target: db_password
