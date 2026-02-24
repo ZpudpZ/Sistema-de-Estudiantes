@@ -1,0 +1,1140 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.dockerignore
+.github/workflows/deploy.yml
+.gitignore
+backend/__init__.py
+backend/crud.py
+backend/database.py
+backend/Dockerfile
+backend/main.py
+backend/models.py
+backend/requirements.txt
+backend/schemas.py
+backend/tests/__init__.py
+backend/tests/test_main.py
+docker-compose.yml
+frontend/assets/styles.css
+frontend/components/header.py
+frontend/Dockerfile
+frontend/main.py
+frontend/requirements.txt
+mysql-init/init.sql
+pytest.ini
+README.md
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="frontend/main.py">
+import streamlit as st
+import requests
+import pandas as pd
+import time
+import re
+from components.header import load_css, render_header, section_title
+
+st.set_page_config(
+    page_title="CRUD - TEST() | UNAP",
+    layout="wide",
+    page_icon="https://aulavirtual2.unap.edu.pe/images/themes/unap/favicon.ico"
+)
+
+load_css()
+render_header()
+
+API_URL = "http://web:8000"
+
+def validar_datos_academicos(codigo, nombres, apellidos):
+    if not codigo.isdigit():
+        return False, "Error de Formato: El Código Universitario debe ser numérico."
+    if len(codigo) != 6:
+        return False, f"Error de Longitud: El Código debe constar de 6 dígitos exactos (Ingresado: {len(codigo)})."
+
+    patron_texto = r"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
+    
+    if not re.match(patron_texto, nombres):
+        return False, "Carácter Inválido: El campo Nombres contiene símbolos no permitidos."
+    if len(nombres.strip()) < 2:
+        return False, "Longitud Insuficiente: El nombre es demasiado corto para ser válido."
+        
+    if not re.match(patron_texto, apellidos):
+        return False, "Carácter Inválido: El campo Apellidos contiene símbolos no permitidos."
+    if len(apellidos.strip()) < 2:
+        return False, "Longitud Insuficiente: El apellido es demasiado corto para ser válido."
+
+    return True, ""
+
+with st.sidebar:
+    st.image("https://oti.unap.edu.pe/recursos/oti-ofic.png", width=150)
+    st.markdown("### Oficina de Registros")
+    st.info("Rol: **Administrador**")
+    st.text("Periodo Lectivo: 2026-I")
+    st.divider()
+    st.caption("CRUD Simple para Gestión de Estudiantes")
+    st.caption("© 2026 UNAP - OTI")
+
+tab_padron, tab_matricula, tab_admin = st.tabs(["PADRÓN DE MATRICULADOS", "NUEVA MATRÍCULA", "ADMINISTRACIÓN ACADÉMICA"])
+
+# REPORTE DE MATRICULADOS
+with tab_padron:
+    section_title("Reporte General de Estudiantes Matriculados", "https://cdn-icons-png.flaticon.com/512/3135/3135715.png")
+
+    try:
+        response = requests.get(f"{API_URL}/estudiantes/")
+        if response.status_code == 200:
+            data = response.json()
+            if data:
+                df = pd.DataFrame(data)
+                
+                total_matriculados = len(df)
+                estudiantes_regulares = len(df[df['activo'] == True]) if 'activo' in df.columns else total_matriculados
+                ciclo_promedio = int(df['semestre'].mean()) if not df.empty else 0
+                
+                k1, k2, k3 = st.columns(3)
+                k1.metric("Total Matriculados", total_matriculados)
+                k2.metric("Estudiantes Regulares", estudiantes_regulares)
+                k3.metric("Ciclo Académico Promedio", f"{ciclo_promedio}°")
+                
+                st.divider()
+
+                df_view = df[["id", "codigo", "nombres", "apellidos", "email", "semestre"]]
+                df_view.columns = ["ID Sistema", "Código Universitario", "Nombres", "Apellidos", "Correo Institucional", "Ciclo"]
+                
+                col_btn, col_refresh = st.columns([2, 8])
+                with col_btn:
+                    csv = df_view.to_csv(index=False).encode("utf-8-sig")
+                    st.download_button(
+                        label="Exportar Padrón (CSV)",
+                        data=csv,
+                        file_name="padron_matriculados_2026_1.csv",
+                        mime="text/csv"
+                    )
+                with col_refresh:
+                    if st.button("Actualizar Padrón"):
+                        st.rerun()
+
+                st.dataframe(
+                    df_view, 
+                    use_container_width=True, 
+                    hide_index=True,
+                    column_config={
+                        "Ciclo": st.column_config.NumberColumn(format="%d°"),
+                        "ID Sistema": st.column_config.NumberColumn(format="%d"),
+                    }
+                )
+            else:
+                st.info("El sistema no presenta registros de matrícula para el periodo actual.")
+        else:
+            st.error(f"Error de comunicación con el servidor central. Código de estado: {response.status_code}")
+    except Exception as e:
+        st.error(f"Fallo de conexión con el servicio de base de datos: {e}")
+
+# PROCESO DE MATRÍCULA
+with tab_matricula:
+    section_title("Proceso de Matrícula - Periodo 2026-I", "https://cdn-icons-png.flaticon.com/512/2921/2921222.png")
+    
+    with st.container(border=True):
+        st.markdown("#### Datos del Postulante")
+        with st.form("form_matricula", clear_on_submit=True):
+            c1, c2 = st.columns(2)
+            with c1:
+                codigo = st.text_input("Código Universitario", max_chars=6, help="Ingrese el código de 6 dígitos asignado.")
+                nombres = st.text_input("Nombres Completos").upper()
+                semestre = st.number_input("Ciclo Académico a Matricular", 1, 12, 1)
+            with c2:
+                apellidos = st.text_input("Apellidos Completos").upper()
+                email = st.text_input("Correo Institucional Asignado")
+
+            st.markdown("<br>", unsafe_allow_html=True)
+            col_izq, col_der = st.columns([1, 4])
+            with col_izq:
+                submit_btn = st.form_submit_button("Procesar Matrícula", type="primary")
+            
+            if submit_btn:
+                es_valido, mensaje_error = validar_datos_academicos(codigo, nombres, apellidos)
+
+                if es_valido:
+                    payload = {
+                        "codigo": codigo, 
+                        "nombres": nombres, 
+                        "apellidos": apellidos, 
+                        "email": email, 
+                        "semestre": semestre
+                    }
+                    try:
+                        with st.spinner("Validando requisitos y registrando en base de datos..."):
+                            res = requests.post(f"{API_URL}/estudiantes/", json=payload)
+                        
+                        if res.status_code == 200:
+                            st.success(f"MATRÍCULA EXITOSA: El estudiante {apellidos}, {nombres} ha sido inscrito en el ciclo {semestre}.")
+                            time.sleep(1.5)
+                            st.rerun()
+                        else:
+                            st.error(f"Error en el proceso de matrícula: {res.text}")
+                    except Exception as e:
+                        st.error(f"Error crítico de red: {e}")
+                else:
+                    st.warning(f"Validación Fallida: {mensaje_error}")
+
+# ADMINISTRACIÓN
+with tab_admin:
+    section_title("Administración de Registros Académicos", "https://cdn-icons-png.flaticon.com/512/3953/3953226.png")
+    
+    col_search, _ = st.columns([2, 4])
+    with col_search:
+        search_code = st.text_input("Buscar Estudiante por Código", max_chars=6)
+        if st.button("Consultar Expediente"):
+            if not search_code:
+                st.warning("Ingrese un Código Universitario válido para iniciar la búsqueda.")
+            else:
+                try:
+                    r = requests.get(f"{API_URL}/estudiantes/buscar/{search_code}")
+                    if r.status_code == 200:
+                        st.session_state['student_found'] = r.json()
+                        st.rerun()
+                    elif r.status_code == 404:
+                        st.warning("No se encuentra el expediente académico solicitado.")
+                        if 'student_found' in st.session_state:
+                            del st.session_state['student_found']
+                    else:
+                        st.error(f"Error interno del servidor: {r.status_code}")
+                except Exception as e:
+                    st.error(f"Error de conectividad: {e}")
+
+    if 'student_found' in st.session_state:
+        stu = st.session_state['student_found']
+        st.divider()
+        st.info(f"Expediente Académico: **{stu['apellidos']}, {stu['nombres']}**")
+
+        with st.expander("Modificación de Datos Académicos", expanded=True):
+            with st.form("edit_form"):
+                ec1, ec2 = st.columns(2)
+                e_cod = ec1.text_input("Código Universitario (Inmutable)", value=stu['codigo'], disabled=True)
+                e_nom = ec1.text_input("Nombres", value=stu['nombres']).upper()
+                e_sem = ec1.number_input("Ciclo Académico", value=stu['semestre'])
+                e_ape = ec2.text_input("Apellidos", value=stu['apellidos']).upper()
+                e_ema = ec2.text_input("Correo Institucional", value=stu['email'])
+
+                if st.form_submit_button("Guardar Cambios en Expediente"):
+                    if len(e_nom) < 2 or len(e_ape) < 2:
+                        st.warning("Error: Los datos personales no cumplen con la longitud mínima requerida.")
+                    else:
+                        pay = {"codigo": e_cod, "nombres": e_nom, "apellidos": e_ape, "email": e_ema, "semestre": e_sem}
+                        try:
+                            requests.put(f"{API_URL}/estudiantes/{stu['id']}", json=pay)
+                            st.session_state['student_found'].update(pay)
+                            st.success("La actualización del expediente se completó correctamente.")
+                            time.sleep(1.5)
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"Error al intentar guardar: {e}")
+
+        st.markdown("---")
+        col_del_1, col_del_2 = st.columns([1, 4])
+        with col_del_1:
+            if st.button("ANULAR MATRÍCULA"):
+                try:
+                    requests.delete(f"{API_URL}/estudiantes/{stu['id']}")
+                    st.success("La matrícula ha sido anulada y el registro eliminado del sistema.")
+                    del st.session_state['student_found']
+                    time.sleep(1.5)
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Error al anular matrícula: {e}")
+</file>
+
+<file path=".dockerignore">
+__pycache__
+venv
+.env
+.git
+.gitignore
+mysql_data
+actions-runner
+</file>
+
+<file path="backend/__init__.py">
+
+</file>
+
+<file path="backend/crud.py">
+from sqlalchemy.orm import Session
+import models, schemas
+
+def get_student(db: Session, student_id: int):
+    return db.query(models.Student).filter(models.Student.id == student_id).first()
+
+def get_student_by_code(db: Session, codigo: str):
+    return db.query(models.Student).filter(models.Student.codigo == codigo).first()
+
+def get_students(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Student).offset(skip).limit(limit).all()
+
+def create_student(db: Session, student: schemas.StudentCreate):
+    db_student = models.Student(
+        codigo=student.codigo,
+        nombres=student.nombres,
+        apellidos=student.apellidos,
+        email=student.email,
+        semestre=student.semestre,
+        activo=student.activo
+    )
+    db.add(db_student)
+    db.commit()
+    db.refresh(db_student)
+    return db_student
+
+def update_student(db: Session, student_id: int, student_data: schemas.StudentCreate):
+    db_student = db.query(models.Student).filter(models.Student.id == student_id).first()
+    
+    if db_student:
+        db_student.nombres = student_data.nombres
+        db_student.apellidos = student_data.apellidos
+        db_student.email = student_data.email
+        db_student.semestre = student_data.semestre
+        
+        db.commit()
+        db.refresh(db_student)
+    
+    return db_student
+
+def delete_student(db: Session, student_id: int):
+    db_student = db.query(models.Student).filter(models.Student.id == student_id).first()
+    if db_student:
+        db.delete(db_student)
+        db.commit()
+    return db_student
+</file>
+
+<file path="backend/database.py">
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+import os
+from dotenv import load_dotenv
+
+def read_secret(secret_name):
+    try:
+        with open(f'/run/secrets/{secret_name}', 'r', encoding='utf-8-sig') as secret_file:
+            return secret_file.read().strip()
+    except IOError:
+        return None
+
+load_dotenv()
+
+if os.getenv("TEST_MODE") == "True":
+    SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
+    connect_args = {"check_same_thread": False}
+    engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args=connect_args)
+    print("\nMODO TEST: Usando SQLite\n")
+
+else:
+    user = read_secret("db_user")
+    password = read_secret("db_password")
+    db_name = read_secret("db_name")
+    
+    if not user:
+        user = os.getenv("DB_USER", "user")
+    if not password:
+        password = os.getenv("DB_PASSWORD", "user_pass")
+    if not db_name:
+        db_name = os.getenv("DB_NAME", "db_estudiantes")
+
+    host = os.getenv("DB_HOST", "db")
+    port = os.getenv("DB_PORT", "3306")
+    
+    SQLALCHEMY_DATABASE_URL = f"mysql+pymysql://{user}:{password}@{host}:{port}/{db_name}"
+
+    engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_recycle=3600)
+    print("\nMODO PRODUCCIÓN: Usando MySQL\n")
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+</file>
+
+<file path="backend/Dockerfile">
+FROM python:3.10-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    default-libmysqlclient-dev \
+    build-essential \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+</file>
+
+<file path="backend/schemas.py">
+from pydantic import BaseModel
+from typing import Optional
+from datetime import datetime
+
+class StudentBase(BaseModel):
+    codigo: str
+    nombres: str
+    apellidos: str
+    email: str
+    semestre: int
+    activo: bool = True
+
+class StudentCreate(StudentBase):
+    pass
+
+class StudentResponse(StudentBase):
+    id: int
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+</file>
+
+<file path="backend/tests/__init__.py">
+
+</file>
+
+<file path="backend/tests/test_main.py">
+import sys
+import os
+import pytest
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'backend'))
+
+from main import app
+from database import Base, get_db
+
+os.environ["TEST_MODE"] = "True"
+
+SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
+
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL,
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool,
+)
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+def override_get_db():
+    try:
+        db = TestingSessionLocal()
+        yield db
+    finally:
+        db.close()
+
+app.dependency_overrides[get_db] = override_get_db
+
+client = TestClient(app)
+
+@pytest.fixture(autouse=True)
+def setup_database():
+    Base.metadata.create_all(bind=engine)
+    yield
+    Base.metadata.drop_all(bind=engine)
+
+def test_lectura_raiz():
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "mensaje" in response.json()
+
+def test_crear_estudiante_exitoso():
+    payload = {
+        "codigo": "202601",
+        "nombres": "JUAN CARLOS",
+        "apellidos": "PEREZ LOPEZ",
+        "email": "juan.perez@unap.edu.pe",
+        "semestre": 9
+    }
+    response = client.post("/estudiantes/", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["codigo"] == "202601"
+    assert "id" in data
+
+def test_crear_estudiante_error_validacion():
+    # Falta el campo semestre y email
+    response = client.post("/estudiantes/", json={
+        "codigo": "123",
+        "nombres": "TEST"
+    })
+    assert response.status_code == 422
+
+def test_crear_estudiante_duplicado():
+    payload = {
+        "codigo": "202699",
+        "nombres": "ANA", "apellidos": "GARCIA", "email": "ana@test.com", "semestre": 1
+    }
+    # Primer registro
+    client.post("/estudiantes/", json=payload)
+    
+    # Segundo registro (Duplicado)
+    response = client.post("/estudiantes/", json=payload)
+    assert response.status_code == 400
+
+def test_lectura_lista_estudiantes():
+    client.post("/estudiantes/", json={
+        "codigo": "LIST01", "nombres": "A", "apellidos": "B", "email": "a@b.com", "semestre": 1
+    })
+    response = client.get("/estudiantes/")
+    assert response.status_code == 200
+    assert len(response.json()) > 0
+
+def test_flujo_actualizacion_eliminacion():
+    # Crear
+    res_create = client.post("/estudiantes/", json={
+        "codigo": "TEMP01", "nombres": "ORIGINAL", "apellidos": "X", "email": "temp@t.com", "semestre": 1
+    })
+    student_id = res_create.json()["id"]
+
+    # Actualizar
+    res_update = client.put(f"/estudiantes/{student_id}", json={
+        "codigo": "TEMP01", "nombres": "EDITADO", "apellidos": "X", "email": "temp@t.com", "semestre": 2
+    })
+    assert res_update.status_code == 200
+    assert res_update.json()["nombres"] == "EDITADO"
+
+    # Eliminar
+    res_del = client.delete(f"/estudiantes/{student_id}")
+    assert res_del.status_code == 200
+
+    # Verificar que ya no existe
+    res_get = client.get(f"/estudiantes/{student_id}")
+    assert res_get.status_code == 404
+</file>
+
+<file path="frontend/assets/styles.css">
+.stApp {
+    background-color: #f8f9fa;
+}
+
+.header-bar {
+    background-color: #003366;
+    padding: 20px;
+    border-bottom: 4px solid #b30000;
+    border-radius: 5px;
+    margin-bottom: 25px;
+    color: white;
+    display: flex;
+    align-items: center;
+}
+
+h1, h2, h3 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    color: #003366 !important;
+}
+
+div.stButton > button {
+    background-color: #003366;
+    color: white;
+    border-radius: 4px;
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    width: 100%;
+}
+
+div.stButton > button:hover {
+    background-color: #002244;
+    color: #ffffff;
+    border: 1px solid white;
+}
+
+.stTabs [data-baseweb="tab-list"] {
+    gap: 10px;
+}
+
+.stTabs [data-baseweb="tab"] {
+    background-color: #ffffff;
+    border-radius: 4px 4px 0px 0px;
+    padding: 10px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+.stTabs [aria-selected="true"] {
+    background-color: #e6efff;
+    border-bottom: 2px solid #003366;
+    font-weight: bold;
+}
+
+.danger-zone {
+    border: 1px solid #ffcccc;
+    background-color: #fff5f5;
+    padding: 15px;
+    border-radius: 5px;
+}
+</file>
+
+<file path="pytest.ini">
+[pytest]
+norecursedirs = actions-runner .git venv mysql_data
+filterwarnings =
+    ignore::DeprecationWarning
+</file>
+
+<file path="backend/models.py">
+from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy.sql import func
+from sqlalchemy import text
+from database import Base
+
+class Student(Base):
+    __tablename__ = "estudiantes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    
+    # Datos de estudiante
+    codigo = Column(String(20), unique=True, index=True, nullable=False)
+    nombres = Column(String(100), nullable=False)
+    apellidos = Column(String(100), nullable=False)
+    email = Column(String(100), unique=True, index=True, nullable=False)
+    semestre = Column(Integer, nullable=False)
+    
+    # Datos de control
+    activo = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), server_default=text('CURRENT_TIMESTAMP'))
+    updated_at = Column(DateTime(timezone=True), onupdate=text('CURRENT_TIMESTAMP'))
+</file>
+
+<file path="backend/requirements.txt">
+fastapi==0.109.0
+uvicorn==0.27.0
+sqlalchemy==2.0.25
+pymysql==1.1.0
+cryptography==42.0.0
+pydantic==2.5.3
+python-dotenv==1.0.1
+httpx==0.26.0
+pytest==8.0.0
+email-validator==2.1.0.post1
+gunicorn==21.2.0
+mysqlclient
+</file>
+
+<file path="frontend/components/header.py">
+import streamlit as st
+import os
+
+def load_css():
+    css_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'styles.css')
+    
+    if os.path.exists(css_path):
+        with open(css_path) as f:
+            st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+def render_header():
+    col_logo, col_text = st.columns([1, 6])
+
+    with col_logo:
+        st.image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaDNyWHvTBumE9ArQGi6z4hmAfCfN61pJa6WjNWX2MqOFh79937u-v_Rrlzh-MzlheACdDFHqCwvAhLQBYN1BLHcc9YEsZYJBRv07BU4Y&s=10", width=150)
+
+    with col_text:
+        st.markdown("""
+        <div style='color: #003366; font-family: sans-serif;'>
+            <h1 style='margin-bottom: 0px; font-size: 2rem;'>UNIVERSIDAD NACIONAL DEL ALTIPLANO</h1>
+            <h3 style='margin-top: 5px; font-weight: 400; color: #555;'>Sistema Integrado de Gestión Académica (SIGA)</h3>
+        </div>
+        <hr style="border: 1px solid #800000; margin-top: 10px;">
+        """, unsafe_allow_html=True)
+
+def section_title(text, icon_url):
+    st.markdown(f"""
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding-top: 10px;">
+            <img src="{icon_url}" width="32"/>
+            <h2 style="margin: 0; color: #003366; font-size: 1.5rem;">{text}</h2>
+        </div>
+    """, unsafe_allow_html=True)
+</file>
+
+<file path="frontend/Dockerfile">
+FROM python:3.10-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8501
+
+CMD ["streamlit", "run", "main.py", "--server.port=8501", "--server.address=0.0.0.0"]
+</file>
+
+<file path="frontend/requirements.txt">
+streamlit
+requests
+pandas
+</file>
+
+<file path="mysql-init/init.sql">
+DROP TABLE IF EXISTS estudiantes;
+
+CREATE TABLE estudiantes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    codigo VARCHAR(20) NOT NULL UNIQUE,
+    nombres VARCHAR(100) NOT NULL,
+    apellidos VARCHAR(100) NOT NULL,
+    email VARCHAR(100),
+    semestre INT NOT NULL,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+</file>
+
+<file path="README.md">
+# (DESACTUALIZADO) R
+# SIGA - Sistema Integrado de Gestión Académica
+
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
+![Docker](https://img.shields.io/badge/container-docker-blue)
+![Python](https://img.shields.io/badge/backend-FastAPI-009688)
+![Streamlit](https://img.shields.io/badge/frontend-Streamlit-FF4B4B)
+
+## Descripción General
+Este repositorio contiene el código fuente y la documentación técnica del Sistema Integrado de Gestión Académica (SIGA). El proyecto consiste en una solución de software diseñada para la administración de información estudiantil, implementada bajo una arquitectura de microservicios containerizados.
+
+El sistema integra un flujo de trabajo DevOps completo, utilizando prácticas de Integración Continua y Despliegue Continuo (CI/CD) para automatizar la puesta en producción en infraestructura On-Premise.
+
+## Arquitectura del Sistema
+El diseño del software sigue el patrón arquitectónico **Modelo-Vista-Controlador (MVC)** distribuido, garantizando el desacoplamiento de componentes y la escalabilidad modular.
+
+### Componentes Principales
+1.  **Frontend (Capa de Presentación):**
+    * Implementado con **Streamlit (Python)**.
+    * Responsable de la interacción con el usuario final.
+    * Incluye lógica de validación de entrada (Input Validation) estricta en el lado del cliente.
+    * Comunicación asíncrona con el Backend mediante peticiones HTTP.
+
+2.  **Backend (Capa de Negocio):**
+    * API RESTful desarrollada con **FastAPI**.
+    * Gestiona la lógica de negocio, transacciones y seguridad.
+    * Utiliza **Pydantic** para la validación de esquemas de datos.
+
+3.  **Persistencia de Datos:**
+    * Motor de base de datos **MySQL 8.0**.
+    * Configuración mediante volúmenes de Docker para garantizar la integridad y persistencia de la información entre reinicios del sistema.
+
+4.  **Orquestación:**
+    * **Docker Compose** administra el ciclo de vida de los contenedores, la red interna virtualizada y la inyección de variables de entorno.
+
+---
+
+## Especificaciones Tecnológicas
+
+| Componente | Tecnología | Versión | Descripción |
+| :--- | :--- | :--- | :--- |
+| Lenguaje | Python | 3.10 | Lenguaje base para Backend y Frontend. |
+| API Framework | FastAPI | 0.95+ | Framework de alto rendimiento para APIs. |
+| Interfaz | Streamlit | Latest | Librería para renderizado de UI de datos. |
+| Base de Datos | MySQL | 8.0 | Sistema de gestión de bases de datos relacional. |
+| ORM | SQLAlchemy | 2.0 | Mapeo objeto-relacional. |
+| Contenedores | Docker | 24.0+ | Plataforma de containerización. |
+| CI/CD | GitHub Actions | - | Automatización del pipeline de despliegue. |
+
+---
+
+## Estructura del Proyecto
+
+```text
+sistema-gestion-oti/
+├── .github/workflows/    # Definición de pipelines CI/CD
+├── app/                  # Código fuente del Backend (Microservicio API)
+│   ├── main.py           # Punto de entrada de la API
+│   ├── models.py         # Modelos de base de datos (SQLAlchemy)
+│   ├── schemas.py        # Esquemas de validación (Pydantic)
+│   └── crud.py           # Capa de acceso a datos
+├── frontend/             # Código fuente del Frontend (Microservicio UI)
+│   ├── assets/           # Recursos estáticos y hojas de estilo
+│   ├── components/       # Módulos de interfaz reutilizables
+│   └── app.py            # Punto de entrada de la aplicación visual
+├── docker-compose.yml    # Archivo de orquestación de servicios
+└── README.md             # Documentación técnica
+```
+---
+
+## Guía de Instalación y Despliegue
+
+### Prerrequisitos
+* Sistema Operativo: Windows 10/11, Linux (Ubuntu 20.04+) o macOS.
+* Docker Desktop instalado y en ejecución.
+* Git instalado.
+
+### Procedimiento de Despliegue Local
+
+**1. Clonar el repositorio**
+```bash
+git clone https://github.com/ZpudpZ/Sistema-de-Estudiantes.git
+cd Sistema-de-Estudiantes
+```
+
+**2. Configuración de Entorno**
+Crear un archivo llamado .env en la raíz del directorio del proyecto con las siguientes credenciales:
+```bash
+COMPOSE_PROJECT_NAME=sistema
+DB_NAME=db_estudiantes
+DB_USER=user
+DB_PASSWORD=user_pass
+DB_HOST=db
+DB_PORT=3306
+MYSQL_ROOT_PASSWORD=root_admin
+```
+**3. Construcción y Ejecución**
+Ejecutar el siguiente comando para compilar las imágenes y levantar los servicios en modo detached:
+```bash
+docker compose up -d --build
+```
+## Manual de Uso
+
+Una vez desplegada la infraestructura, los servicios estarán accesibles en los siguientes puertos locales:
+
+### Aplicación Web (Frontend)
+**URL:** http://localhost:8501
+
+* **Módulo Directorio:** Visualización tabular de estudiantes activos en el sistema.
+* **Módulo Inscripción:** Formulario de registro con validación de integridad (Código de matrícula de 6 dígitos numéricos).
+* **Módulo Gestión:** Funcionalidad de búsqueda por Código de Matrícula, edición de datos y eliminación lógica/física de registros.
+
+### Documentación API (Swagger UI)
+**URL:** http://localhost:8000/docs
+
+* Interfaz técnica autogenerada para pruebas de endpoints, verificación de esquemas JSON y códigos de estado HTTP.
+
+---
+
+## Flujo de Integración y Despliegue Continuo (CI/CD)
+
+El proyecto implementa un pipeline automatizado mediante **GitHub Actions** y un **Self-Hosted Runner**.
+
+1.  **Source Control:** El código es versionado en la rama `main`.
+2.  **Continuous Integration (CI):** Al detectar un `push`, GitHub Actions inicia el flujo de trabajo.
+3.  **Continuous Deployment (CD):** El Runner local, configurado en el servidor de destino:
+    * Descarga la última versión del código.
+    * Reconstruye las imágenes de Docker si se detectan cambios en las dependencias.
+    * Reinicia los contenedores garantizando "Zero-Downtime" en la base de datos (gracias a los volúmenes persistentes).
+
+---
+
+## Autor
+**Wilder P.**
+*Estudiante de Ingeniería de Sistemas*
+* Universidad Nacional del Altiplano (UNAP)
+* [ZpudpZ](https://github.com/ZpudpZ)
+</file>
+
+<file path="backend/main.py">
+from fastapi import FastAPI, Depends, HTTPException
+from sqlalchemy.orm import Session
+from typing import List
+import time
+from sqlalchemy.exc import OperationalError
+import models, schemas, crud, database
+
+app = FastAPI(title="Sistema de Estudiantes - API")
+
+@app.on_event("startup")
+def startup():
+    max_retries = 15
+    wait_seconds = 5
+
+    for attempt in range(max_retries):
+        try:
+            print(f"\n[INFO] Intento de conexión a DB: {attempt + 1}/{max_retries}...")
+            models.Base.metadata.create_all(bind=database.engine)
+            print("[EXITO] Conexión establecida y tablas verificadas.\n")
+            break
+        except OperationalError as e:
+            print(f"[WARN] La base de datos aún no responde. Reintentando en {wait_seconds}s...")
+            time.sleep(wait_seconds)
+    else:
+        print("\n[CRITICO] No se pudo conectar a la DB después de varios intentos.\n")
+
+
+@app.get("/")
+def read_root():
+    return {"mensaje": "API de Gestión Académica Operativa", "docs": "/docs"}
+
+@app.post("/estudiantes/", response_model=schemas.StudentResponse)
+def crear_estudiante(student: schemas.StudentCreate, db: Session = Depends(database.get_db)):
+    db_student = crud.get_student_by_code(db, codigo=student.codigo)
+    if db_student:
+        raise HTTPException(status_code=400, detail="El código de matrícula ya existe.")
+    return crud.create_student(db=db, student=student)
+
+@app.get("/estudiantes/", response_model=List[schemas.StudentResponse])
+def leer_estudiantes(skip: int = 0, limit: int = 100, db: Session = Depends(database.get_db)):
+    return crud.get_students(db, skip=skip, limit=limit)
+
+@app.get("/estudiantes/buscar/{codigo}", response_model=schemas.StudentResponse)
+def leer_estudiante_por_codigo(codigo: str, db: Session = Depends(database.get_db)):
+    db_student = crud.get_student_by_code(db, codigo=codigo)
+    if db_student is None:
+        raise HTTPException(status_code=404, detail="Estudiante no encontrado")
+    return db_student
+
+@app.get("/estudiantes/{student_id}", response_model=schemas.StudentResponse)
+def leer_estudiante_por_id(student_id: int, db: Session = Depends(database.get_db)):
+    db_student = crud.get_student(db, student_id=student_id)
+    if db_student is None:
+        raise HTTPException(status_code=404, detail="Estudiante no encontrado")
+    return db_student
+
+@app.put("/estudiantes/{student_id}", response_model=schemas.StudentResponse)
+def actualizar_estudiante(student_id: int, student: schemas.StudentCreate, db: Session = Depends(database.get_db)):
+    db_student = crud.get_student(db, student_id)
+    if not db_student:
+        raise HTTPException(status_code=404, detail="Estudiante no encontrado")
+    return crud.update_student(db=db, student_id=student_id, student_data=student)
+
+@app.delete("/estudiantes/{student_id}")
+def eliminar_estudiante(student_id: int, db: Session = Depends(database.get_db)):
+    db_student = crud.get_student(db, student_id)
+    if not db_student:
+        raise HTTPException(status_code=404, detail="Estudiante no encontrado")
+    crud.delete_student(db=db, student_id=student_id)
+    return {"mensaje": "Estudiante eliminado correctamente"}
+</file>
+
+<file path=".gitignore">
+# Python & entorno virtual  
+__pycache__/
+*.py[cod]
+venv/
+.env
+# IDEs
+.idea/
+.vscode/
+.DS_Store
+
+# Configuracion local y datos sensibles
+secrets/
+mysql_data/
+*.log
+
+# Base de datos
+*.db
+*.sqlite
+
+# Testeo
+.pytest_cache/
+
+# Infraestructura de CI/CD
+actions-runner/
+</file>
+
+<file path="docker-compose.yml">
+services:
+  web:
+    build: ./backend
+    restart: always
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    secrets:
+      - db_password
+      - db_user
+      - db_name
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+
+  db:
+    image: mysql:8.0
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --innodb_buffer_pool_size=256M
+      --max_connections=50
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$(cat /run/secrets/db_root_password)"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    environment:
+      MYSQL_DATABASE: db_estudiantes
+      MYSQL_USER_FILE: /run/secrets/db_user
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    ports:
+      - "3307:3306"
+    secrets:
+      - db_password
+      - db_user
+      - db_root_password
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+
+  frontend:
+    build: ./frontend
+    restart: always
+    ports:
+      - "8501:8501"
+    depends_on:
+      - web
+    environment:
+      - API_URL=http://web:8000
+
+volumes:
+  mysql_data:
+
+secrets:
+  db_name:
+    file: ./secrets/db_name.txt
+  db_user:
+    file: ./secrets/db_user.txt
+  db_password:
+    file: ./secrets/db_password.txt
+  db_root_password:
+    file: ./secrets/db_root_password.txt
+</file>
+
+<file path=".github/workflows/deploy.yml">
+name: CI/CD
+
+on:
+  push:
+    branches: [ "main", "feature/*" ]
+
+jobs:
+  deploy-local:
+    runs-on: self-hosted
+
+    steps:
+      - name: Descargar Código
+        uses: actions/checkout@v4
+
+      - name: Limpieza Previa
+        run: docker compose down -v --remove-orphans
+        continue-on-error: true
+
+      - name: Configurar Secretos
+        env:
+          SEC_DB_NAME: ${{ secrets.DB_NAME }}
+          SEC_DB_USER: ${{ secrets.DB_USER }}
+          SEC_DB_PASS: ${{ secrets.DB_PASSWORD }}
+          SEC_ROOT_PASS: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+        run: |
+          $root = Get-Location
+          $secretsPath = Join-Path $root "secrets"
+          $initPath = Join-Path $root "mysql-init"
+
+          if (Test-Path $secretsPath) {
+              Remove-Item -Path $secretsPath -Recurse -Force
+          }
+
+          New-Item -ItemType Directory -Force -Path $secretsPath | Out-Null
+          New-Item -ItemType Directory -Force -Path $initPath | Out-Null
+
+          $files = @{
+              "db_name.txt"          = $env:SEC_DB_NAME
+              "db_user.txt"          = $env:SEC_DB_USER
+              "db_password.txt"      = $env:SEC_DB_PASS
+              "db_root_password.txt" = $env:SEC_ROOT_PASS
+          }
+
+          foreach ($name in $files.Keys) {
+              $path = Join-Path $secretsPath $name
+              
+              if (-not [string]::IsNullOrWhiteSpace($files[$name])) {
+                  [System.IO.File]::WriteAllText($path, $files[$name])
+              } else {
+                  Write-Error "Error: Secreto vacio para $name"
+                  exit 1
+              }
+          }
+
+          $sqlContent = "GRANT ALL PRIVILEGES ON $($env:SEC_DB_NAME).* TO '$($env:SEC_DB_USER)'@'%'; FLUSH PRIVILEGES;"
+          $sqlPath = Join-Path $initPath "init.sql"
+          [System.IO.File]::WriteAllText($sqlPath, $sqlContent)
+
+      - name: Ejecutar Pruebas en Docker
+        run: |
+          docker compose build web
+          docker compose run --rm --entrypoint "sh -c" web "pip install pytest httpx coverage && export PYTHONPATH=/app && pytest tests/ -v"
+
+      - name: Despliegue Final o Apagado
+        if: always()
+        run: |
+          docker compose down --remove-orphans
+          
+          docker ps --filter "publish=3307" -q | ForEach-Object { docker rm -f $_ }
+          docker ps --filter "publish=8000" -q | ForEach-Object { docker rm -f $_ }
+          docker ps --filter "publish=8501" -q | ForEach-Object { docker rm -f $_ }
+          
+          Start-Sleep -Seconds 5
+          
+          docker compose up -d --build
+          docker image prune -f
+</file>
+
+</files>

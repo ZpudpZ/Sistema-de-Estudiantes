@@ -25,37 +25,29 @@ jobs:
         run: |
           $root = Get-Location
           $secretsPath = Join-Path $root "secrets"
-          $initPath = Join-Path $root "mysql-init"
-
-          if (Test-Path $secretsPath) {
-              Remove-Item -Path $secretsPath -Recurse -Force
-          }
-
+          
+          # Asegurar limpieza total
+          if (Test-Path $secretsPath) { Remove-Item -Path $secretsPath -Recurse -Force }
           New-Item -ItemType Directory -Force -Path $secretsPath | Out-Null
-          New-Item -ItemType Directory -Force -Path $initPath | Out-Null
 
           $files = @{
-              "db_name.txt"          = $env:SEC_DB_NAME
-              "db_user.txt"          = $env:SEC_DB_USER
-              "db_password.txt"      = $env:SEC_DB_PASS
-              "db_root_password.txt" = $env:SEC_ROOT_PASS
+              "db_name.txt"          = $env:SEC_DB_NAME.Trim()
+              "db_user.txt"          = $env:SEC_DB_USER.Trim()
+              "db_password.txt"      = $env:SEC_DB_PASS.Trim()
+              "db_root_password.txt" = $env:SEC_ROOT_PASS.Trim()
           }
 
           foreach ($name in $files.Keys) {
               $path = Join-Path $secretsPath $name
-              
               if (-not [string]::IsNullOrWhiteSpace($files[$name])) {
-                  [System.IO.File]::WriteAllText($path, $files[$name])
+                  # EL PORQUÉ: Forzamos UTF8 sin BOM y solo saltos de línea LF (\n)
+                  # Esto garantiza que MySQL en Docker no lea caracteres extraños como '\r'
+                  $utf8NoBom = New-Object System.Text.UTF8Encoding $false
+                  [System.IO.File]::WriteAllLines($path, $files[$name], $utf8NoBom)
               } else {
-                  Write-Error "Error: Secreto vacio para $name"
-                  exit 1
+                  throw "Error: Secreto vacio para $name"
               }
           }
-
-          $sqlContent = "GRANT ALL PRIVILEGES ON $($env:SEC_DB_NAME).* TO '$($env:SEC_DB_USER)'@'%'; FLUSH PRIVILEGES;"
-          $sqlPath = Join-Path $initPath "init.sql"
-          [System.IO.File]::WriteAllText($sqlPath, $sqlContent)
-
       - name: Ejecutar Pruebas en Docker
         run: |
           docker compose build web
