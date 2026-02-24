@@ -16,11 +16,29 @@ render_header()
 
 API_URL = "http://web:8000"
 
+def check_backend_connectivity():
+    max_retries = 5
+    for i in range(max_retries):
+        try:
+            response = requests.get(f"{API_URL}/", timeout=3)
+            if response.status_code == 200:
+                return True
+        except requests.exceptions.ConnectionError:
+            if i < max_retries - 1:
+                time.sleep(3)
+            continue
+    return False
+
+if 'backend_ready' not in st.session_state:
+    with st.spinner("Estableciendo conexión con el servicio académico..."):
+        if check_backend_connectivity():
+            st.session_state['backend_ready'] = True
+        else:
+            st.error("Error Crítico: No se pudo establecer conexión con el Backend (web:8000).")
+            st.info("Asegúrese de que el contenedor 'web' esté corriendo y MySQL esté Healthy.")
+            st.stop()
+
 def validar_datos_academicos(codigo, nombres, apellidos, email):
-    """
-    Validación de negocio previa al envío (Frontend Guard).
-    El 'Porqué': Reduce carga innecesaria al backend y mejora la latencia percibida.
-    """
     if not codigo.isdigit() or len(codigo) != 6:
         return False, "El Código Universitario debe ser numérico y de 6 dígitos."
     
@@ -55,14 +73,12 @@ with tab_padron:
             data = response.json()
             if data:
                 df = pd.DataFrame(data)
-                
                 k1, k2, k3 = st.columns(3)
                 k1.metric("Total Registrados", len(df))
                 k2.metric("Ciclo Promedio", f"{int(df['semestre'].mean())}°")
                 k3.metric("Estado de Servicio", "Operativo", delta_color="normal")
                 
                 st.divider()
-
                 df_view = df[["id", "codigo", "nombres", "apellidos", "email", "semestre"]]
                 df_view.columns = ["ID", "Código", "Nombres", "Apellidos", "Email", "Ciclo"]
                 
@@ -79,8 +95,8 @@ with tab_padron:
                 st.info("No existen registros en el sistema.")
         else:
             st.error(f"Error del Servidor ({response.status_code}): No se pudo recuperar el padrón.")
-    except requests.exceptions.ConnectionError:
-        st.error("Error Crítico: No se pudo establecer conexión con el Backend (web:8000).")
+    except Exception as e:
+        st.error(f"Error al conectar con el Padrón: {e}")
 
 # TAB 2
 with tab_matricula:
