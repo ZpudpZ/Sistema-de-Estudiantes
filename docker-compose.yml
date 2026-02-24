@@ -2,20 +2,26 @@ services:
   web:
     build: ./backend
     restart: always
-    volumes:
-      - ./backend:/app
     ports:
       - "8000:8000"
     depends_on:
       db:
         condition: service_healthy
     secrets:
-      - db_password
-      - db_user
-      - db_name
+      - source: db_password
+        target: db_password
+      - source: db_user
+        target: db_user
+      - source: db_name
+        target: db_name
     environment:
       - DB_HOST=db
       - DB_PORT=3306
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); s.connect(('127.0.0.1', 8000))"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   db:
     image: mysql:8.0
@@ -25,11 +31,11 @@ services:
       --max_connections=50
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$(cat /run/secrets/db_root_password)"]
-      interval: 15s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$(cat /run/secrets/db_root_password) || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
     environment:
       MYSQL_DATABASE: db_estudiantes
       MYSQL_USER_FILE: /run/secrets/db_user
@@ -39,11 +45,14 @@ services:
       - mysql_data:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d
     ports:
-      - "3307:3306"
+      - "3315:3306"
     secrets:
-      - db_password
-      - db_user
-      - db_root_password
+      - source: db_password
+        target: db_password
+      - source: db_user
+        target: db_user
+      - source: db_root_password
+        target: db_root_password
     deploy:
       resources:
         limits:
@@ -57,7 +66,8 @@ services:
     ports:
       - "8501:8501"
     depends_on:
-      - web
+      web:
+        condition: service_healthy
     environment:
       - API_URL=http://web:8000
 
