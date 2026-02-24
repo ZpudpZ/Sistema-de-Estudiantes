@@ -13,8 +13,8 @@ import crud
 import database
 
 def init_db():
-    max_retries = 15
-    wait_seconds = 5
+    max_retries = 20
+    wait_seconds = 3
     for attempt in range(max_retries):
         try:
             models.Base.metadata.create_all(bind=database.engine)

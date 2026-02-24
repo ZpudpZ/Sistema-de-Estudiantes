@@ -2,8 +2,8 @@ services:
   web:
     build: ./backend
     restart: always
-    volumes:
-      - ./backend:/app
+    #volumes:
+    #  - ./backend:/app
     ports:
       - "8000:8000"
     depends_on:
@@ -25,7 +25,7 @@ services:
       --max_connections=50
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$(cat /run/secrets/db_root_password)"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$(cat /run/secrets/db_root_password) || exit 1"]
       interval: 15s
       timeout: 10s
       retries: 5
@@ -57,7 +57,8 @@ services:
     ports:
       - "8501:8501"
     depends_on:
-      - web
+      web:
+        condition: service_healthy
     environment:
       - API_URL=http://web:8000
 
