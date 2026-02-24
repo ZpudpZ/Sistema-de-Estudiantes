@@ -39,7 +39,7 @@ services:
       - mysql_data:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d
     ports:
-      - "3307:3306"
+      - "3310:3306"
     secrets:
       - db_password
       - db_user
