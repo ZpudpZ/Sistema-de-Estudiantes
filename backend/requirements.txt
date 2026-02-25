@@ -9,4 +9,3 @@ httpx==0.26.0
 pytest==8.0.0
 email-validator==2.1.0.post1
 gunicorn==21.2.0
-mysqlclient
