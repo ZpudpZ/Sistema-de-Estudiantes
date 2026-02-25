@@ -15,7 +15,7 @@ jobs:
       - name: Limpieza Extrema de Disco
         run: |
           docker compose down -v --remove-orphans
-          docker system prune -a -f
+          docker system prune -a --volumes -f
           docker builder prune -a -f
         continue-on-error: true
 
