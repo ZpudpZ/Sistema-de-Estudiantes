@@ -1,85 +1,49 @@
-services:
-  web:
-    build: ./backend
-    restart: always
-    ports:
-      - "8000:8000"
-    depends_on:
-      db:
-        condition: service_healthy
-    secrets:
-      - source: db_password
-        target: db_password
-      - source: db_user
-        target: db_user
-      - source: db_name
-        target: db_name
-    environment:
-      - DB_HOST=db
-      - DB_PORT=3306
-    healthcheck:
-      test: ["CMD", "python", "-c", "import socket; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); s.connect(('127.0.0.1', 8000))"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+name: CI/CD
 
-  db:
-    image: mysql:8.0
-    command: >
-      --default-authentication-plugin=mysql_native_password
-      --innodb_buffer_pool_size=256M
-      --max_connections=50
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$(cat /run/secrets/db_root_password) || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 40s
-    environment:
-      MYSQL_DATABASE: db_estudiantes
-      MYSQL_USER_FILE: /run/secrets/db_user
-      MYSQL_PASSWORD_FILE: /run/secrets/db_password
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - ./mysql-init:/docker-entrypoint-initdb.d
-    ports:
-      - "3315:3306"
-    secrets:
-      - source: db_password
-        target: db_password
-      - source: db_user
-        target: db_user
-      - source: db_root_password
-        target: db_root_password
-    deploy:
-      resources:
-        limits:
-          memory: 1G
-        reservations:
-          memory: 512M
+on:
+  push:
+    branches: [ "main", "feature/*" ]
 
-  frontend:
-    build: ./frontend
-    restart: always
-    ports:
-      - "8501:8501"
-    depends_on:
-      web:
-        condition: service_healthy
-    environment:
-      - API_URL=http://web:8000
+jobs:
+  deploy-local:
+    runs-on: self-hosted
 
-volumes:
-  mysql_data:
+    steps:
+      - name: Descargar Código
+        uses: actions/checkout@v4
 
-secrets:
-  db_name:
-    file: ./secrets/db_name.txt
-  db_user:
-    file: ./secrets/db_user.txt
-  db_password:
-    file: ./secrets/db_password.txt
-  db_root_password:
-    file: ./secrets/db_root_password.txt
+      - name: Limpieza Extrema de Disco
+        run: |
+          docker compose down -v --remove-orphans
+          docker system prune -a -f
+          docker builder prune -a -f
+        continue-on-error: true
+
+      - name: Configurar Secretos (Bash para EC2)
+        run: |
+          mkdir -p secrets
+          rm -rf secrets/*.txt
+          printf "%s" "${{ secrets.DB_NAME }}" > secrets/db_name.txt
+          printf "%s" "${{ secrets.DB_USER }}" > secrets/db_user.txt
+          printf "%s" "${{ secrets.DB_PASSWORD }}" > secrets/db_password.txt
+          printf "%s" "${{ secrets.MYSQL_ROOT_PASSWORD }}" > secrets/db_root_password.txt
+          chmod 600 secrets/*.txt
+        shell: bash
+
+      - name: Ejecutar Pruebas en Docker
+        run: |
+          docker compose build web
+          docker compose run --rm --entrypoint "sh -c" web "pip install pytest httpx coverage && export PYTHONPATH=/app && pytest tests/ -v"
+
+      - name: Despliegue Final
+        if: success()
+        run: |
+          docker compose down --remove-orphans
+          sleep 5
+          docker compose up -d --build
+          docker image prune -f
+
+      - name: Limpieza en Fallo
+        if: failure()
+        run: |
+          docker compose down -v
