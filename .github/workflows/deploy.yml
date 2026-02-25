@@ -12,10 +12,12 @@ jobs:
       - name: Descargar Código
         uses: actions/checkout@v4
 
-      - name: Limpieza Previa
+      - name: Limpieza Extrema de Disco
         run: |
           docker compose down -v --remove-orphans
-          docker system prune -f
+          docker system prune -a -f
+          docker builder prune -a -f
+          sudo journalctl --vacuum-time=1s
         continue-on-error: true
 
       - name: Configurar Secretos
@@ -31,7 +33,7 @@ jobs:
 
       - name: Ejecutar Pruebas en Docker
         run: |
-          docker compose build web
+          docker compose build --no-cache web
           docker compose run --rm --entrypoint "sh -c" web "pip install pytest httpx coverage && export PYTHONPATH=/app && pytest tests/ -v"
 
       - name: Despliegue Final
@@ -39,10 +41,11 @@ jobs:
         run: |
           docker compose down --remove-orphans
           sleep 5
-          docker compose up -d --build
+          docker compose up -d --build --force-recreate
           docker image prune -f
 
       - name: Limpieza en Fallo
         if: failure()
         run: |
           docker compose down -v
+          docker system prune -f
