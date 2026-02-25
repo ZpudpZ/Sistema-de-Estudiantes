@@ -1,66 +1,54 @@
-﻿name: CI/CD
+﻿name: CI/CD Pipeline
 
 on:
   push:
     branches: [ "main", "feature/*" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
-  deploy-local:
-    runs-on: self-hosted
-
+  test:
+    runs-on: ubuntu-latest
     steps:
       - name: Descargar Código
         uses: actions/checkout@v4
 
-      - name: Limpieza Previa
+      - name: Configurar Secretos Temporales para Test
         run: |
-          docker compose down -v --remove-orphans
-          docker system prune -f
-        continue-on-error: true
+          mkdir -p secrets
+          echo "test_db" > secrets/db_name.txt
+          echo "test_user" > secrets/db_user.txt
+          echo "test_pass" > secrets/db_password.txt
+          echo "test_root" > secrets/db_root_password.txt
 
-      - name: Configurar Secretos
+      - name: Ejecutar Pruebas
+        run: |
+          docker compose build web
+          docker compose run --rm --entrypoint "sh -c" web "pip install pytest httpx coverage && export PYTHONPATH=/app && pytest tests/ -v"
+
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: self-hosted
+    steps:
+      - name: Descargar Código
+        uses: actions/checkout@v4
+
+      - name: Configurar Secretos Reales (Bash version)
         env:
           SEC_DB_NAME: ${{ secrets.DB_NAME }}
           SEC_DB_USER: ${{ secrets.DB_USER }}
           SEC_DB_PASS: ${{ secrets.DB_PASSWORD }}
           SEC_ROOT_PASS: ${{ secrets.MYSQL_ROOT_PASSWORD }}
         run: |
-          $secretsPath = Join-Path (Get-Location) "secrets"
-          
-          if (Test-Path $secretsPath) { Remove-Item -Path $secretsPath -Recurse -Force }
-          New-Item -ItemType Directory -Force -Path $secretsPath | Out-Null
+          mkdir -p secrets
+          printf "%s" "$SEC_DB_NAME" > secrets/db_name.txt
+          printf "%s" "$SEC_DB_USER" > secrets/db_user.txt
+          printf "%s" "$SEC_DB_PASS" > secrets/db_password.txt
+          printf "%s" "$SEC_ROOT_PASS" > secrets/db_root_password.txt
 
-          $files = @{
-              "db_name.txt"          = $env:SEC_DB_NAME.Trim()
-              "db_user.txt"          = $env:SEC_DB_USER.Trim()
-              "db_password.txt"      = $env:SEC_DB_PASS.Trim()
-              "db_root_password.txt" = $env:SEC_ROOT_PASS.Trim()
-          }
-
-          foreach ($name in $files.Keys) {
-              $path = Join-Path $secretsPath $name
-              if (-not [string]::IsNullOrWhiteSpace($files[$name])) {
-                  $utf8NoBom = New-Object System.Text.UTF8Encoding $false
-                  [System.IO.File]::WriteAllText($path, $files[$name], $utf8NoBom)
-              } else {
-                  throw "Error: Secreto vacio para $name"
-              }
-          }
-
-      - name: Ejecutar Pruebas en Docker
-        run: |
-          docker compose build web
-          docker compose run --rm --entrypoint "sh -c" web "pip install pytest httpx coverage && export PYTHONPATH=/app && pytest tests/ -v"
-
-      - name: Despliegue Final
-        if: success()
+      - name: Despliegue Final en AWS
         run: |
           docker compose down --remove-orphans
-          Start-Sleep -Seconds 5
           docker compose up -d --build
           docker image prune -f
-
-      - name: Limpieza en Fallo
-        if: failure()
-        run: |
-          docker compose down -v
