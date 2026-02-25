@@ -40,12 +40,16 @@ jobs:
           docker compose build web
           docker compose run --rm --entrypoint "sh -c" web "pip install pytest httpx coverage && export PYTHONPATH=/app && pytest tests/ -v"
 
-      - name: Despliegue Final
+      - name: Despliegue por Partes (Ahorro de Espacio)
         if: success()
         run: |
-          docker compose down --remove-orphans
-          sleep 5
-          docker compose up -d --build
+          docker compose up -d db
+          sleep 10
+          
+          docker compose up -d --build web
+          docker image prune -f
+          
+          docker compose up -d --build frontend
           docker image prune -f
 
       - name: Limpieza en Fallo
