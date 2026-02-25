@@ -12,26 +12,28 @@ jobs:
       - name: Descargar Código
         uses: actions/checkout@v4
 
-      - name: Limpieza Extrema (Para no llenar los 8GB de AWS)
+      - name: Limpieza Extrema de Disco
         run: |
           docker compose down -v --remove-orphans
           docker system prune -a -f
           docker builder prune -a -f
         continue-on-error: true
 
-      - name: Configurar Secretos (Versión Linux para EC2)
+      - name: Configurar Secretos
+        shell: bash
+        env:
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASSWORD }}
+          ROOT_PASS: ${{ secrets.MYSQL_ROOT_PASSWORD }}
         run: |
           mkdir -p secrets
           rm -rf secrets/*.txt
-
-          printf "%s" "${{ secrets.DB_NAME }}" > secrets/db_name.txt
-          printf "%s" "${{ secrets.DB_USER }}" > secrets/db_user.txt
-          printf "%s" "${{ secrets.DB_PASSWORD }}" > secrets/db_password.txt
-          printf "%s" "${{ secrets.MYSQL_ROOT_PASSWORD }}" > secrets/db_root_password.txt
-          printf "%s" "${{ secrets.MYSQL_ROOT_PASSWORD }}" > secrets/mysql_root_password.txt
-          
+          printf "%s" "$DB_NAME" > secrets/db_name.txt
+          printf "%s" "$DB_USER" > secrets/db_user.txt
+          printf "%s" "$DB_PASS" > secrets/db_password.txt
+          printf "%s" "$ROOT_PASS" > secrets/db_root_password.txt
           chmod 600 secrets/*.txt
-        shell: bash
 
       - name: Ejecutar Pruebas en Docker
         run: |
