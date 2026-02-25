@@ -1,54 +1,48 @@
-﻿name: CI/CD Pipeline
+﻿name: CI/CD
 
 on:
   push:
     branches: [ "main", "feature/*" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  deploy-local:
+    runs-on: self-hosted
+
     steps:
       - name: Descargar Código
         uses: actions/checkout@v4
 
-      - name: Configurar Secretos Temporales para Test
+      - name: Limpieza Previa
+        run: |
+          docker compose down -v --remove-orphans
+          docker system prune -f
+        continue-on-error: true
+
+      - name: Configurar Secretos
         run: |
           mkdir -p secrets
-          echo "test_db" > secrets/db_name.txt
-          echo "test_user" > secrets/db_user.txt
-          echo "test_pass" > secrets/db_password.txt
-          echo "test_root" > secrets/db_root_password.txt
+          rm -rf secrets/*
+          printf "%s" "${{ secrets.DB_NAME }}" > secrets/db_name.txt
+          printf "%s" "${{ secrets.DB_USER }}" > secrets/db_user.txt
+          printf "%s" "${{ secrets.DB_PASSWORD }}" > secrets/db_password.txt
+          printf "%s" "${{ secrets.MYSQL_ROOT_PASSWORD }}" > secrets/db_root_password.txt
+          printf "%s" "${{ secrets.MYSQL_ROOT_PASSWORD }}" > secrets/mysql_root_password.txt
+          chmod 600 secrets/*.txt
 
-      - name: Ejecutar Pruebas
+      - name: Ejecutar Pruebas en Docker
         run: |
           docker compose build web
           docker compose run --rm --entrypoint "sh -c" web "pip install pytest httpx coverage && export PYTHONPATH=/app && pytest tests/ -v"
 
-  deploy:
-    needs: test
-    if: github.ref == 'refs/heads/main'
-    runs-on: self-hosted
-    steps:
-      - name: Descargar Código
-        uses: actions/checkout@v4
-
-      - name: Configurar Secretos Reales (Bash version)
-        env:
-          SEC_DB_NAME: ${{ secrets.DB_NAME }}
-          SEC_DB_USER: ${{ secrets.DB_USER }}
-          SEC_DB_PASS: ${{ secrets.DB_PASSWORD }}
-          SEC_ROOT_PASS: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-        run: |
-          mkdir -p secrets
-          printf "%s" "$SEC_DB_NAME" > secrets/db_name.txt
-          printf "%s" "$SEC_DB_USER" > secrets/db_user.txt
-          printf "%s" "$SEC_DB_PASS" > secrets/db_password.txt
-          printf "%s" "$SEC_ROOT_PASS" > secrets/db_root_password.txt
-
-      - name: Despliegue Final en AWS
+      - name: Despliegue Final
+        if: success()
         run: |
           docker compose down --remove-orphans
+          sleep 5
           docker compose up -d --build
           docker image prune -f
+
+      - name: Limpieza en Fallo
+        if: failure()
+        run: |
+          docker compose down -v
