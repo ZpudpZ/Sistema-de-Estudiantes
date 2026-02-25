@@ -1,17 +1,13 @@
-FROM python:3.10-slim
+FROM amancevice/pandas:2.1.4-slim
 
 WORKDIR /app
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir numpy==1.26.4 pandas pyarrow && \
-    pip install --no-cache-dir -r requirements.txt && \
-    rm -rf /root/.cache/pip
-    
+    grep -vE "pandas|numpy|pyarrow" requirements.txt > req_light.txt && \
+    pip install --no-cache-dir -r req_light.txt
+
 COPY . .
 EXPOSE 8501
 CMD ["streamlit", "run", "main.py", "--server.port=8501", "--server.address=0.0.0.0"]
