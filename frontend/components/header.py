@@ -18,7 +18,7 @@ def render_header():
         st.markdown("""
         <div style='color: #003366; font-family: sans-serif;'>
             <h1 style='margin-bottom: 0px; font-size: 2rem;'>UNIVERSIDAD NACIONAL DEL ALTIPLANO</h1>
-            <h3 style='margin-top: 5px; font-weight: 400; color: #555;'>Sistema Integrado de Gestión Académica (SIGA)</h3>
+            <h3 style='margin-top: 5px; font-weight: 400; color: #555;'>Sistema OTI - Versión Automática</h3>
         </div>
         <hr style="border: 1px solid #800000; margin-top: 10px;">
         """, unsafe_allow_html=True)

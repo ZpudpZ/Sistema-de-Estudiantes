@@ -6,7 +6,7 @@ import re
 from components.header import load_css, render_header, section_title
 
 st.set_page_config(
-    page_title="Gestión de Estudiantes - OTI | UNAP",
+    page_title="Gestión CRUD - simple (OTI) | UNAP",
     layout="wide",
     page_icon="https://aulavirtual2.unap.edu.pe/images/themes/unap/favicon.ico"
 )
