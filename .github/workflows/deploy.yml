@@ -12,10 +12,10 @@ jobs:
       - name: Descargar Código
         uses: actions/checkout@v4
 
-      - name: Limpieza Extrema de Disco
+      - name: Limpieza Balanceada de Infraestructura
         run: |
-          docker compose down -v --remove-orphans
-          docker system prune -a --volumes -f
+          docker compose down --remove-orphans
+          docker image prune -a -f
           docker builder prune -a -f
         continue-on-error: true
 
@@ -40,19 +40,18 @@ jobs:
           docker compose build web
           docker compose run --rm --entrypoint "sh -c" web "pip install pytest httpx coverage && export PYTHONPATH=/app && pytest tests/ -v"
 
-      - name: Despliegue por Partes (Ahorro de Espacio)
+      - name: Despliegue Secuencial de Producción
         if: success()
         run: |
           docker compose up -d db
           sleep 10
           
           docker compose up -d --build web
-          docker image prune -f
-          
           docker compose up -d --build frontend
+          
           docker image prune -f
 
-      - name: Limpieza en Fallo
+      - name: Gestión de Fallos
         if: failure()
         run: |
-          docker compose down -v
+          docker compose down
